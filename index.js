@@ -494,7 +494,7 @@ async function main_fb(url) {
 	}
 }
 
-const port = process.env.PORT || 3050;
+const port = process.env.PORT || 3000;
 server.listen(port, function() {
   console.log(" [200] " + "Node Status - running at port " + port);
 });
