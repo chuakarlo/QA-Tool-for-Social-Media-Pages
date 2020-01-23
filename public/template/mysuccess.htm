@@ -1,0 +1,39 @@
+<!-- Container -->
+<div class="container-fluid">
+  <br>
+  <h6>MySuccess.Team</h6>
+  <hr>
+  <div>
+      <button type="button" class="btn btn-info text-sm" ng-click="get_tp_mysuccess()" ng-disabled="fetch_tp">Trust Pilot <i class='fa fa-cog fa-spin' ng-show="fetch_tp"></i></button>    
+      <button type="button" class="btn btn-info text-sm" ng-click="get_fb_mysuccess()" ng-disabled="fetch_fb">Facebook <i class='fa fa-cog fa-spin' ng-show="fetch_fb"></i></button>
+      <button type="button" class="btn btn-info text-sm" ng-click="get_gr_mysuccess()" ng-disabled="fetch_gr">Google Reviews <i class='fa fa-cog fa-spin' ng-show="fetch_gr"></i></button> 
+      <!--<button type="button" class="btn btn-success text-sm pull-right" ng-click="write_gs()" ng-disabled="true">Write to GoogleSheet</button>!-->          
+  </div>
+  <div class="row pad_">
+    <div class="col-md-12 card text-sm">  
+      <h6>{{show_reviews}}</h6>
+      <table class="table table-striped table-responsive text-sm">
+        <thead>
+          <tr>
+            <th width="20%">Date</th>
+            <th width="20%">Reviewer</th>            
+            <th width="40%">Review Text</th> 
+            <th width="10%">Replies</th>            
+            <th width="10%">Review URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="d in reviews | orderBy: '-date'">
+            <td width="20%">{{(d.date) | date: "MMM dd yyyy" : 'MST'}}</td>
+            <td width="20%">{{d.account_name}}</td>
+            <td width="40%">{{d.article}}</td>  
+            <td width="10%">{{d.replies}}</td>           
+            <td width="10%"><a target="_blank" href="{{d.url}}">{{d.url}}</a></td>              
+          </tr>
+        </tbody>
+      </table>                     
+    </div>
+  </div>
+</div>
+
+

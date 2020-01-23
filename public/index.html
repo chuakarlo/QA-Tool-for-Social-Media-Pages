@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>QAS Reviews</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- 
+
+Style Sheets
+
+-->   
+
+  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>  
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/trumbowyg.min.css">  
+  <link rel="stylesheet" href="css/font-awesome.min.css">  
+  <link rel="stylesheet" href="css/style.css">  
+  <link rel="stylesheet" href="css/sidebar.css">    
+</head>
+<body ng-app="notes" ng-controller="ctrl" ng-cloak>
+
+<!-- 
+
+Navigation bar basics
+
+ !-->
+
+<nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+  <button class="btn btn-primary" id="menu-toggle"><span class="fa fa-arrow-left"></span></button>
+  <a class="navbar-brand" href="#">QAS Reviews</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav ml-auto">
+      <!--
+      <li class="nav-item">
+        <a class="nav-link" href="#"><img class="rounded" ng-src="{{user.pic}}" height="20"  />Hi {{user.first}}</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" ng-click="sign_out()">Log Out</a>
+      </li> 
+      !-->  
+    </ul>
+  </div>  
+</nav>
+
+<!-- 
+
+Container basics
+
+-->
+
+<div class="d-flex" id="wrapper">
+<!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper" style="margin-top: 3px;">
+      	<div class="list-group list-group-flush text-sm">
+			<a href="#/" class="list-group-item list-group-item-action bg-light"></i>EasyLifeHelper.com</a>
+			<a href="#/mysuccess" class="list-group-item list-group-item-action bg-light"></i>MySuccess.Team</a>
+			<a href="#/coaching" class="list-group-item list-group-item-action bg-light"></i>CoachingBusiness.org</a>
+			<a href="#/visionary" class="list-group-item list-group-item-action bg-light"></i>VisionarySite.org</a>
+			<a href="#/onlinesuccess" class="list-group-item list-group-item-action bg-light"></i>OnlineSuccess.Site</a>
+			<a href="#/supportservice" class="list-group-item list-group-item-action bg-light"></i>SupportServicePro.com</a>
+			<a href="#/driveforsuccess" class="list-group-item list-group-item-action bg-light"></i>DriveForSuccess.org</a>
+			<a href="#/topcoach" class="list-group-item list-group-item-action bg-light"></i>TopCoachConsulting.com</a>
+			<a href="#/upservice" class="list-group-item list-group-item-action bg-light"></i>UpService.site</a>
+			<a href="#/" class="list-group-item list-group-item-action bg-light disabled"></i>OnlineSupportService.com</a>
+			<a href="#/" class="list-group-item list-group-item-action bg-light disabled"></i>TopOnlineShopSupport.com</a>
+			<a href="#/" class="list-group-item list-group-item-action bg-light disabled"></i>MegaUptime.com</a>
+			<a href="#/" class="list-group-item list-group-item-action bg-light disabled"></i>eSuccess.site</a>
+			<a href="#/" class="list-group-item list-group-item-action bg-light disabled"></i>BestLifeHelper.com</a>						
+
+    	</div>
+    </div>
+<!-- sidebar-->
+
+<!-- Page Content -->
+<!-- 
+
+View Template
+
+-->  
+
+    <div id="page-content-wrapper" ng-view>
+
+
+    </div><!-- page-content-wrapper -->
+  </div><!-- wrapper -->
+</body>  
+
+<!-- 
+
+Scripts
+
+-->   
+
+  <script src="js/jquery.min.js"></script>
+  <script>
+    $("#menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+    });
+  </script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/angular.min.js"></script>
+  <script src="js/angular-animate.min.js"></script>
+  <script src="js/angular-aria.min.js"></script>
+  <script src="js/angular-route.js"></script>     
+  <script src="js/angular-cookies.min.js"></script>     
+  <script src="js/angular-touch.min.js"></script>  
+  <script src="js/angular-filter.min.js"></script>  
+  <script src="js/d3.js"></script>    
+  <script src="js/index.js"> </script> 
+  <script src="js/route_custom.js"></script>       
+  <script src="js/fetch.min.js"> </script>   
+  <script src="js/request.min.js"> </script>  
+</html>
