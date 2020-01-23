@@ -221,7 +221,13 @@ async function main_tp(url) {
 	console.log("Fetching: " + url)
 	var data = [];
 	try {
-			const browser = await puppeteer.launch({ headless : true });
+			const browser = await puppeteer.launch({
+				headless : true,
+				args: [
+					'--no-sandbox',
+					'--disable-setuid-sandbox'
+					],
+				});
 			const page = await browser.newPage();
 			page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3312.0 Safari/537.36');
 			await page.goto(url,{ waitUntil: 'networkidle0',timeout: 3000000 });
@@ -286,7 +292,13 @@ async function main_gr(url) {
 	console.log("Fetching: " + url)
 	var data = [];	
 	try {
-		const browser = await puppeteer.launch({ headless : true });
+		const browser = await puppeteer.launch({
+				headless : true,
+				args: [
+					'--no-sandbox',
+					'--disable-setuid-sandbox'
+					],
+				});
 		const page = await browser.newPage();
 		page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3312.0 Safari/537.36');
 		await page.setViewport({ width: 1280, height: 800 })
@@ -382,7 +394,13 @@ async function main_fb(url) {
 	console.log("Fetching: " + url)
 	var data = [];
 	try {
-		const browser = await puppeteer.launch({ headless : true });
+		const browser = await puppeteer.launch({
+				headless : true,
+				args: [
+					'--no-sandbox',
+					'--disable-setuid-sandbox'
+					],
+				});
 		const page = await browser.newPage();
 		page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3312.0 Safari/537.36');
 		//needs to click on the see all reviews
