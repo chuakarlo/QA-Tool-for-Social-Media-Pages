@@ -231,56 +231,69 @@ async function main_tp(url) {
 			const page = await browser.newPage();
 			page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3312.0 Safari/537.36');
 			await page.goto(url,{ waitUntil: 'networkidle0',timeout: 3000000 });
-			await page.waitForSelector('.review-list');
-			const sections = await page.$$('.review-card');
-			for(i = 0; i < sections.length; i++){
-				//get date
-				const d = await page.$$('.review-content-header__dates script');
-				const d_text = await (await d[i].getProperty('innerText')).jsonValue();
-				const d_array = JSON.parse(d_text);
 
-				//get account name
-				const a = await page.$$('.consumer-information__name');
-				const a_text = await (await a[i].getProperty('innerText')).jsonValue();
+			while (true) {
+				await page.waitForSelector('.review-list');
+				const sections = await page.$$('.review-card');
+				for(i = 0; i < sections.length; i++){
+					//get date
+					const d = await page.$$('.review-content-header__dates script');
+					const d_text = await (await d[i].getProperty('innerText')).jsonValue();
+					const d_array = JSON.parse(d_text);
 
-				//get url
-				const selector = '.review-content__body a'
-				await page.waitForSelector(selector);
-				const u_text = await page.$$eval(selector, am => am.filter(e => e.href).map(e => e.href))
-	
-				//get article text
-				const p = await page.$$('.review-content__body p');
-				const p_text = await (await p[i].getProperty('innerText')).jsonValue();
+					//get account name
+					const a = await page.$$('.consumer-information__name');
+					const a_text = await (await a[i].getProperty('innerText')).jsonValue();
 
-				//get replies
-				const s_reviews = ('.review__company-reply');
-				try {
-					var r = await sections[i].$$(s_reviews);
+					//get url
+					const selector = '.review__consumer-information a'
+					await page.waitForSelector(selector);
+					const u_text = await page.$$eval(selector, am => am.filter(e => e.href).map(e => e.href))
+		
+					//get article text
+					const p = await page.$$('.review-content__body p');
+					const p_text = await (await p[i].getProperty('innerText')).jsonValue();
 
-					if (r.length != 0) {
-						const content = await sections[i].$$('.brand-company-reply__content');
+					//get replies
+					const s_reviews = ('.review__company-reply');
+					try {
+						var r = await sections[i].$$(s_reviews);
 
-						var r_text = (await (await content[0].getProperty('textContent')).jsonValue()).toString();
-					} else {
+						if (r.length != 0) {
+							const content = await sections[i].$$('.brand-company-reply__content');
+
+							var r_text = (await (await content[0].getProperty('textContent')).jsonValue()).toString();
+						} else {
+							var r_text = "";
+						}
+					}
+					catch (e)
+					{
+						console.log(e);
 						var r_text = "";
 					}
-				}
-				catch (e)
-				{
-					console.log(e);
-					var r_text = "";
+
+					//push all data to data array
+					data.push({
+						date : d_array.publishedDate,
+						account_name : a_text,
+						url : u_text[i],
+						article : p_text,
+						replies : r_text
+					});
+
+
 				}
 
-				//push all data to data array
-				data.push({
-					date : d_array.publishedDate,
-					account_name : a_text,
-					url : u_text[i],
-					article : p_text,
-					replies : r_text
-				});			
+				const nextPage = await page.$$('a.button.button--primary.next-page');
+
+				if (nextPage.length != 0) {
+					await nextPage[0].click();
+				} else {
+					break;
+				}
 			}
-			return data;	
+			return data;
 			await browser.close();			
 	}
 	catch (e){
