@@ -16,9 +16,9 @@ Style Sheets
   <link rel="stylesheet" href="css/trumbowyg.min.css">  
   <link rel="stylesheet" href="css/font-awesome.min.css">  
   <link rel="stylesheet" href="css/style.css">  
-  <link rel="stylesheet" href="css/sidebar.css">    
+  <link rel="stylesheet" href="css/sidebar.css">
 </head>
-<body ng-app="notes" ng-controller="ctrl" ng-cloak>
+<body ng-app="notes" ng-controller="ctrl">
 
 <!-- 
 
@@ -43,7 +43,10 @@ Navigation bar basics
       </li> 
       !-->  
     </ul>
-  </div>  
+  </div>
+  <div ng-app="notes" ng-controller="ModalCtrl">
+    <button class="btn btn-primary" ng-click="open()">Add Site</button>
+  </div>
 </nav>
 
 <!-- 
@@ -55,22 +58,8 @@ Container basics
 <div class="d-flex" id="wrapper">
 <!-- Sidebar -->
     <div class="bg-light border-right" id="sidebar-wrapper" style="margin-top: 3px;">
-      	<div class="list-group list-group-flush text-sm">
-			<a href="#/" class="list-group-item list-group-item-action bg-light"></i>EasyLifeHelper.com</a>
-			<a href="#/mysuccess" class="list-group-item list-group-item-action bg-light"></i>MySuccess.Team</a>
-			<a href="#/coaching" class="list-group-item list-group-item-action bg-light"></i>CoachingBusiness.org</a>
-			<a href="#/visionary" class="list-group-item list-group-item-action bg-light"></i>VisionarySite.org</a>
-			<a href="#/onlinesuccess" class="list-group-item list-group-item-action bg-light"></i>OnlineSuccess.Site</a>
-			<a href="#/supportservice" class="list-group-item list-group-item-action bg-light"></i>SupportServicePro.com</a>
-			<a href="#/driveforsuccess" class="list-group-item list-group-item-action bg-light"></i>DriveForSuccess.org</a>
-			<a href="#/topcoach" class="list-group-item list-group-item-action bg-light"></i>TopCoachConsulting.com</a>
-			<a href="#/upservice" class="list-group-item list-group-item-action bg-light"></i>UpService.site</a>
-			<a href="#/" class="list-group-item list-group-item-action bg-light disabled"></i>OnlineSupportService.com</a>
-			<a href="#/" class="list-group-item list-group-item-action bg-light disabled"></i>TopOnlineShopSupport.com</a>
-			<a href="#/" class="list-group-item list-group-item-action bg-light disabled"></i>MegaUptime.com</a>
-			<a href="#/" class="list-group-item list-group-item-action bg-light disabled"></i>eSuccess.site</a>
-			<a href="#/" class="list-group-item list-group-item-action bg-light disabled"></i>BestLifeHelper.com</a>						
-
+      	<div ng-if="menus" class="list-group list-group-flush text-sm" ng-repeat="(k,v) in menus">
+          <a href="#/" ng-click="load_data(v)" class="list-group-item list-group-item-action bg-light">{{v.name}}</a>
     	</div>
     </div>
 <!-- sidebar-->
@@ -110,10 +99,10 @@ Scripts
   <script src="js/angular-route.js"></script>     
   <script src="js/angular-cookies.min.js"></script>     
   <script src="js/angular-touch.min.js"></script>  
-  <script src="js/angular-filter.min.js"></script>  
-  <script src="js/d3.js"></script>    
+  <script src="js/angular-filter.min.js"></script>
   <script src="js/index.js"> </script> 
   <script src="js/route_custom.js"></script>       
   <script src="js/fetch.min.js"> </script>   
   <script src="js/request.min.js"> </script>  
+  <script data-require="ui-bootstrap@*" data-semver="2.5.0" src="https://cdn.rawgit.com/angular-ui/bootstrap/gh-pages/ui-bootstrap-tpls-2.5.0.js"></script>
 </html>

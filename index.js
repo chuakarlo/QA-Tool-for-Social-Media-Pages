@@ -4,6 +4,9 @@ var server = require('http').Server(app);
 var bodyParser = require('body-parser');
 var sqlite3 = require('sqlite3');
 var db = new sqlite3.Database('./data.db');
+var fs = require('fs');
+var util = require('util');
+
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
 app.use(bodyParser.json({limit: '50mb'}));
@@ -17,201 +20,45 @@ const puppeteer = require('puppeteer');
 const tr = require('timeago-reverse');
 //Post request
 
-//Easy Life Helper
-app.post("/get_tp_easy", function(req,res){
-	var data = req.body;
-	main_tp('https://www.trustpilot.com/review/easylifehelper.com').then(function(reviews){
+// Add new site details to list
+app.post("/add_site_details", function(req, res) {
+	var data = req.query;
+	var sites = null;
+	let site = {
+		name: data.name,
+		tp: data.tp,
+		fb: data.fb,
+		gr: data.gr
+	};
+
+	fs.readFile('public/sites.json', (err, data) => {
+	    if (err) throw err;
+		const writeFile = util.promisify(fs.writeFile);
+
+	    sites = JSON.parse(data);
+	    sites.push(site);
+
+		writeFile('public/sites.json', JSON.stringify(sites, null, 2))
+		.then(() => {console.log('success'); res.send('success');})
+		.catch(error => console.log(error));
+	});
+});
+
+// Get Reviews
+app.post("/get_tp", function(req,res) {
+	main_tp(req.query.v).then(function(reviews) {
 		res.send(reviews);
 	});
 })
 
-app.post("/get_fb_easy", function(req,res){
-	var data = req.body;
-	main_fb('https://www.facebook.com/pg/Easy-Life-Helper-113016700077154/reviews/?ref=page_internal').then(function(reviews){
+app.post("/get_fb", function(req,res) {
+	main_fb(req.query.v).then(function(reviews) {
 		res.send(reviews);
 	});
 })
 
-app.post("/get_gr_easy", function(req,res){
-	var data = req.body;
-	main_gr('https://www.google.com/maps/place/EasyLifeHelper.com/@34.178412,-118.9272813,17z/data=!3m1!4b1!4m5!3m4!1s0x80e83b1dbc6ddc05:0xaa80959e17cc6a78!8m2!3d34.1784076!4d-118.9250926').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-//My Success.Team
-app.post("/get_tp_mysuccess", function(req,res){
-	var data = req.body;
-	main_tp('https://www.trustpilot.com/review/mysuccess.team').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_fb_mysuccess", function(req,res){
-	var data = req.body;
-	main_fb('https://www.facebook.com/pg/My-Success-Team-101654927853244/reviews/?ref=page_internal').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_gr_mysuccess", function(req,res){
-	var data = req.body;
-	main_gr('https://www.google.com/maps/place/MySuccess.Team/@53.4431571,-2.2684968,17z/data=!3m1!4b1!4m5!3m4!1s0x487bada1e8a6e00f:0xfd6579e13033cac8!8m2!3d53.4431539!4d-2.2663081').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-//Coaching Business
-app.post("/get_tp_coaching", function(req,res){
-	var data = req.body;
-	main_tp('https://www.trustpilot.com/review/coachingbusiness.org').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_fb_coaching", function(req,res){
-	var data = req.body;
-	main_fb('https://www.facebook.com/pg/Coaching-Business-101946834506142/reviews/?ref=page_internal').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_gr_coaching", function(req,res){
-	var data = req.body;
-	main_gr('https://www.google.com/maps/place/coachingbusiness.org/@34.4083226,-118.5879366,17z/data=!3m1!4b1!4m13!1m7!3m6!1s0x80c280c97f9826d9:0x26faec94dd8fae82!2s26852+Greenleaf+Ct,+Stevenson+Ranch,+CA+91381,+USA!3b1!8m2!3d34.4083226!4d-118.5857479!3m4!1s0x80c2814cc22bfc45:0x83a54245f4c0d1f5!8m2!3d34.4083226!4d-118.5857479').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-//Visionary Site
-app.post("/get_tp_visionary", function(req,res){
-	var data = req.body;
-	main_tp('https://www.trustpilot.com/review/visionarysite.org').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_fb_visionary", function(req,res){
-	var data = req.body;
-	main_fb('https://www.facebook.com/pg/Visionary-Site-105289664168613/reviews/?ref=page_internal').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_gr_visionary", function(req,res){
-	var data = req.body;
-	main_gr('https://www.google.com/maps/place/Go+Time+Genius+LLC/@33.8680137,-118.1880927,17z/data=!3m1!4b1!4m5!3m4!1s0x80dd33e4024254ab:0x252518ad7369e1c9!8m2!3d33.8680137!4d-118.185904').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-//OnlineSuccess
-app.post("/get_tp_onlinesuccess", function(req,res){
-	var data = req.body;
-	main_tp('https://www.trustpilot.com/review/onlinesuccess.site').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_fb_onlinesuccess", function(req,res){
-	var data = req.body;
-	main_fb('https://www.facebook.com/pg/Online-Success-Site-103448594339357/reviews/?ref=page_internal').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_gr_onlinesuccess", function(req,res){
-	var data = req.body;
-	main_gr('https://www.google.com/maps/place/OnlineSuccess.site/@51.3715665,-0.4189158,17z/data=!3m1!4b1!4m5!3m4!1s0x487675246f2058eb:0x420a215be5410943!8m2!3d51.3715632!4d-0.4167271').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-
-//Support Service Pro
-app.post("/get_tp_supportservice", function(req,res){
-	var data = req.body;
-	main_tp('https://www.trustpilot.com/review/supportservicepro.com').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_fb_supportservice", function(req,res){
-	var data = req.body;
-	main_fb('https://www.facebook.com/pg/Support-Service-Pro-100722517968856/reviews/?ref=page_internal').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_gr_supportservice", function(req,res){
-	var data = req.body;
-	main_gr('https://www.google.com/maps/place/SupportServicePro.com/@34.1560463,-118.7914989,17z/data=!3m1!4b1!4m5!3m4!1s0x80e825f0849b02a9:0xcb7cb8aaa3f5c886!8m2!3d34.1560419!4d-118.7893102').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-//Drive for Success
-app.post("/get_tp_driveforsuccess", function(req,res){
-	var data = req.body;
-	main_tp('https://www.trustpilot.com/review/driveforsuccess.org').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_fb_driveforsuccess", function(req,res){
-	var data = req.body;
-	main_fb('https://www.facebook.com/pg/Drive-For-Success-108670570493496/reviews/?ref=page_internal').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_gr_driveforsuccess", function(req,res){
-	var data = req.body;
-	main_gr('https://www.google.com/maps/place/DriveForSuccess.org/@34.4587923,-118.541016,17z/data=!3m1!4b1!4m5!3m4!1s0x80c27d9d2d8df345:0xb09591c622bb521b!8m2!3d34.4587879!4d-118.5388273').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-//Top Coach Consulting
-app.post("/get_tp_topcoach", function(req,res){
-	var data = req.body;
-	main_tp('https://www.trustpilot.com/review/topcoachconsulting.com').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_fb_topcoach", function(req,res){
-	var data = req.body;
-	main_fb('https://www.facebook.com/pg/Top-Coach-Consulting-110555270308984/reviews/?ref=page_internal').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_gr_topcoach", function(req,res){
-	var data = req.body;
-	main_gr('https://www.google.com/maps/place/TopCoachConsulting.com/@34.4567462,-118.6285538,17z/data=!3m1!4b1!4m5!3m4!1s0x80c27fd25aeff271:0x5006c31c5a84598e!8m2!3d34.4567418!4d-118.6263651').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-//Up Service Site
-app.post("/get_tp_upservice", function(req,res){
-	var data = req.body;
-	main_tp('https://www.trustpilot.com/review/upservice.site').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_fb_upservice", function(req,res){
-	var data = req.body;
-	main_fb('https://www.facebook.com/pg/Up-Service-Site-101023397970285/reviews/?ref=page_internal').then(function(reviews){
-		res.send(reviews);
-	});
-})
-
-app.post("/get_gr_upservice", function(req,res){
-	var data = req.body;
-	main_gr('https://www.google.com/maps/place/UpService.site/@34.639597,-118.2494832,17z/data=!4m8!1m2!2m1!1shttps:%2F%2Fupservice.site%2F!3m4!1s0x80c25d75fd613a1d:0x30c31b38693dbc4f!8m2!3d34.639597!4d-118.2472945?hl=en').then(function(reviews){
+app.post("/get_gr", function(req,res) {
+	main_gr(req.query.v).then(function(reviews) {
 		res.send(reviews);
 	});
 })

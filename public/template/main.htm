@@ -1,12 +1,12 @@
 <!-- Container -->
-<div class="container-fluid">
+<div class="container-fluid" ng-if="selectedMenu">
   <br>
-  <h6>EasyLifeHelper.com</h6>
+  <h6>{{selectedMenu.name}}</h6>
   <hr>
   <div>
-      <button type="button" class="btn btn-info text-sm" ng-click="get_tp_easy()" ng-disabled="fetch_tp">Trust Pilot <i class='fa fa-cog fa-spin' ng-show="fetch_tp"></i></button>    
-      <button type="button" class="btn btn-info text-sm" ng-click="get_fb_easy()" ng-disabled="fetch_fb">Facebook <i class='fa fa-cog fa-spin' ng-show="fetch_fb"></i></button>
-      <button type="button" class="btn btn-info text-sm" ng-click="get_gr_easy()" ng-disabled="fetch_gr">Google Reviews <i class='fa fa-cog fa-spin' ng-show="fetch_gr"></i></button> 
+      <button type="button" class="btn btn-info text-sm" ng-click="get_tp(selectedMenu.tp)" ng-disabled="fetch_tp">Trust Pilot <i class='fa fa-cog fa-spin' ng-show="fetch_tp"></i></button>    
+      <button type="button" class="btn btn-info text-sm" ng-click="get_fb(selectedMenu.fb)" ng-disabled="fetch_fb">Facebook <i class='fa fa-cog fa-spin' ng-show="fetch_fb"></i></button>
+      <button type="button" class="btn btn-info text-sm" ng-click="get_gr(selectedMenu.gr)" ng-disabled="fetch_gr">Google Reviews <i class='fa fa-cog fa-spin' ng-show="fetch_gr"></i></button>
       <!--<button type="button" class="btn btn-success text-sm pull-right" ng-click="write_gs()" ng-disabled="true">Write to GoogleSheet</button>!-->          
   </div>
   <div class="row pad_">
