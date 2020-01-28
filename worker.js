@@ -4,9 +4,10 @@ let Queue = require("bull");
 let REDIS_URL = process.env.REDIS_URL || "redis://127.0.0.1:6379";
 let workers = process.env.WEB_CONCURRENCY || 1;
 let maxJobsPerWorker = 50;
+let workQueue;
 
 function start() {
-  let workQueue = new Queue('work', REDIS_URL);
+  workQueue = new Queue('work', REDIS_URL);
 
   workQueue.process(maxJobsPerWorker, async (job) => {
     console.log("I am a worker :)");
