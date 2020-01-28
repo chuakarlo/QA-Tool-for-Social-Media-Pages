@@ -31,6 +31,11 @@ function start() {
   });
 }
 
+setInterval(() => {
+  console.log('cleaning worker...');
+  workQueue.clean(5000);
+}, 5000);
+
 throng({ workers, start });
 
 const puppeteer = require('puppeteer');
