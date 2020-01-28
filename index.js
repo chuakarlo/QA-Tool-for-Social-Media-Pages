@@ -6,6 +6,7 @@ var sqlite3 = require('sqlite3');
 var db = new sqlite3.Database('./data.db');
 var fs = require('fs');
 var util = require('util');
+var Queue = require('bull');
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
