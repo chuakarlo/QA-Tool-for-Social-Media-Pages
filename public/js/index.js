@@ -58,7 +58,7 @@ $scope.get_tp = function(v) {
         jobs[res.data.id] = { id: res.data.id };
     })
 
-    stop = $interval(updateJobs, 5000);
+    stop = $interval(updateJobs, 8000);
 }
 
 $scope.get_fb = function(v) {
@@ -72,7 +72,7 @@ $scope.get_fb = function(v) {
         jobs[res.data.id] = { id: res.data.id };
     })
 
-    stop = $interval(updateJobs, 5000);
+    stop = $interval(updateJobs, 8000);
 }
 
 $scope.get_gr = function(v) {
@@ -86,7 +86,7 @@ $scope.get_gr = function(v) {
         jobs[res.data.id] = { id: res.data.id };
     })
 
-    stop = $interval(updateJobs, 5000);
+    stop = $interval(updateJobs, 8000);
 }
 
 });
