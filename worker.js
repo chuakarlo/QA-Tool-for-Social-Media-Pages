@@ -26,8 +26,10 @@ function start() {
     job.data.reviews = reviews;
     job.progress(100);
 
-    console.log('cleaning worker...');
-    workQueue.clean(5000);
+    if (reviews !== null) {
+      console.log('cleaning worker...');
+      workQueue.clean(5000);
+    }
 
     return {reviews: reviews};
   });
