@@ -1,7 +1,10 @@
 var app = angular.module('notes', ['ngRoute','ngTouch','ngCookies','angular.filter', 'ui.bootstrap']);
-app.controller('ctrl', function($scope, $location,request,$window,fetch,$q, $sce,$http){
+app.controller('ctrl', function($scope, $location,request,$window,fetch,$q, $sce, $http, $interval){
 
 var dataSource = $http.get('sites.json');
+
+var jobs = {};
+var stop;
 
 if (dataSource) {
     dataSource.success(function(data) {
@@ -23,41 +26,67 @@ $scope.load_data = function(v) {
     $scope.selectedMenu = v;
 }
 
+async function updateJobs() {
+    for (let id of Object.keys(jobs)) {
+        var query = {
+            url : '/job/'+id,
+        }
+        request.query(query).then(function(res) {
+            if (!!jobs[id]) {
+                $scope.reviews = res.data.reviews;
+                if (res.data.reviews !== null) {
+                    $scope.fetch_tp = false;
+                    $scope.fetch_fb = false;
+                    $scope.fetch_gr = false;
+                    $interval.cancel(stop);
+                    jobs = {};
+                }
+            }
+        });
+    }
+}
+
 //Get Reviews Functions
 $scope.get_tp = function(v) {
     $scope.fetch_tp = true;
     var query = {
-        url : '/get_tp?v='+v,
+        url : '/job_tp?v='+v,
     }
+
     request.query(query).then(function(res) {
         $scope.show_reviews = "Trustpilot Reviews";
-        $scope.reviews = res.data;
-        $scope.fetch_tp = false;
+        jobs[res.data.id] = { id: res.data.id };
     })
+
+    stop = $interval(updateJobs, 200);
 }
 
 $scope.get_fb = function(v) {
     $scope.fetch_fb = true;
     var query = {
-        url : '/get_fb?v='+v,
+        url : '/job_fb?v='+v,
     }
+
     request.query(query).then(function(res) {
         $scope.show_reviews = "Facebook Reviews";
-        $scope.reviews = res.data;
-        $scope.fetch_fb = false;
+        jobs[res.data.id] = { id: res.data.id };
     })
+
+    stop = $interval(updateJobs, 200);
 }
 
 $scope.get_gr = function(v) {
     $scope.fetch_gr = true;
     var query = {
-        url : '/get_gr?v='+v,
+        url : '/job_gr?v='+v,
     }
+
     request.query(query).then(function(res) {
-        $scope.show_reviews = "Google Reviews";
-        $scope.reviews = res.data;
-        $scope.fetch_gr = false;
+        $scope.show_reviews = "Trustpilot Reviews";
+        jobs[res.data.id] = { id: res.data.id };
     })
+
+    stop = $interval(updateJobs, 200);
 }
 
 });
