@@ -2,7 +2,7 @@ let throng = require('throng');
 let Queue = require("bull");
 
 let REDIS_URL = process.env.REDIS_URL || "redis://127.0.0.1:6379";
-let workers = process.env.WEB_CONCURRENCY || 2;
+let workers = process.env.WEB_CONCURRENCY || 1;
 let maxJobsPerWorker = 50;
 
 function start() {
