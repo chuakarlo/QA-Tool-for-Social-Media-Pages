@@ -26,14 +26,12 @@ function start() {
     job.data.reviews = reviews;
     job.progress(100);
 
+    console.log('cleaning worker...');
+    workQueue.clean(5000);
+
     return {reviews: reviews};
   });
 }
-
-setInterval(() => {
-  console.log('cleaning worker...');
-  workQueue.clean(5000);
-}, 5000);
 
 throng({ workers, start });
 

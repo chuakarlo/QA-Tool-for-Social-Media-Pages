@@ -81,11 +81,6 @@ app.post("/add_site_details", function(req, res) {
 	});
 });
 
-setInterval(() => {
-	console.log('cleaning index...');
-  	workQueue.clean(5000);
-}, 5000);
-
 server.listen(port, function() {
   console.log(" [200] " + "Node Status - running at port " + port);
 });
