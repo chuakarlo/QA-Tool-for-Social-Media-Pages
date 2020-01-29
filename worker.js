@@ -23,10 +23,10 @@ function start() {
         break;
     }
 
-    cleanQueue();
-
     job.data.reviews = reviews;
     job.progress(100);
+
+    cleanQueue();
 
     return {reviews: reviews};
   });
