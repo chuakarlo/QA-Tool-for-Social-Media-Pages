@@ -23,6 +23,8 @@ function start() {
         break;
     }
 
+    cleanQueue();
+
     job.data.reviews = reviews;
     job.progress(100);
 
@@ -30,12 +32,12 @@ function start() {
   });
 }
 
-setInterval(() => {
+function cleanQueue() {
   console.log('cleaning worker...');
   workQueue.clean(0, 'delayed');
   workQueue.clean(0, 'completed');
   workQueue.clean(0, 'failed');
-}, 8000);
+}
 
 throng({ workers, start });
 
