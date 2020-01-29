@@ -26,9 +26,9 @@ function start() {
     job.data.reviews = reviews;
     job.progress(100);
 
-    cleanQueue();
-
     return {reviews: reviews};
+
+    cleanQueue();
   });
 }
 
