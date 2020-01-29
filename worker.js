@@ -32,7 +32,6 @@ function start() {
 
 setInterval(() => {
   console.log('cleaning worker...');
-  workQueue.clean(5000);
   workQueue.clean(0, 'delayed');
   workQueue.clean(0, 'completed');
   workQueue.clean(0, 'failed');
