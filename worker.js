@@ -8,6 +8,7 @@ let workQueue = new Queue('work', REDIS_URL);
 
 function start() {
   workQueue.process(maxJobsPerWorker, async (job) => {
+    cleanQueue();
     console.log("I am a worker :)");
     let reviews = null;
 
@@ -27,8 +28,6 @@ function start() {
     job.progress(100);
 
     return {reviews: reviews};
-
-    cleanQueue();
   });
 }
 
