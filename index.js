@@ -17,7 +17,8 @@ app.use(function(req, res, next) {
 
 const port = process.env.PORT || 3000;
 
-let REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
+let REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
+// let REDIS_URL = process.env.REDIS_URL || 'redis-19222.c80.us-east-1-2.ec2.cloud.redislabs.com:19222';
 
 let workQueue = new Queue('work', REDIS_URL);
 
@@ -39,8 +40,27 @@ app.post("/job_gr", async(req, res) => {
 	res.json({ id: job.id });
 });
 
+// app.post("/job/:id", async(req, res) => {
+// 	let id = req.params.id;
+// 	let job = await workQueue.getJob(id);
+
+// 	if (job === null) {
+// 		res.status(404).end();
+// 	} else {
+// 		let state = await job.getState();
+// 		let progress = job._progress;
+// 		let reason = job.failedReason;
+// 		let reviews = null;
+// 		if (job.returnvalue !== null) {
+// 			reviews = job.returnvalue.reviews;
+// 		}
+// 		res.json({ id, state, progress, reason, reviews });
+// 	}
+// });
+
 app.post("/job/:id", async(req, res) => {
 	let id = req.params.id;
+	let name = req.query.name;
 	let job = await workQueue.getJob(id);
 
 	if (job === null) {
@@ -52,9 +72,59 @@ app.post("/job/:id", async(req, res) => {
 		let reviews = null;
 		if (job.returnvalue !== null) {
 			reviews = job.returnvalue.reviews;
+			if (reviews === undefined) reviews = [];
+
+			fs.readFile('public/reviews/'+name+'.json', (err, data) => {
+				if (err) {
+					var createStream = fs.createWriteStream('public/reviews/'+name+'.json');
+					createStream.end();
+				}
+				const writeFile = util.promisify(fs.writeFile);
+
+				writeFile('public/reviews/'+name+'.json', JSON.stringify(reviews, null, 2))
+				.then(() => {console.log('success');})
+				.catch(error => console.log(error));
+			});
 		}
+
 		res.json({ id, state, progress, reason, reviews });
 	}
+});
+
+app.post("/get_tp_reviews", function(req, res) {
+	var name = req.query.name;
+
+	fs.readFile('public/reviews/'+name+'_tp.json', (err, data) => {
+		if (err) throw err;
+
+		var reviews = JSON.parse(data);
+
+		res.json({ reviews });
+	});
+});
+
+app.post("/get_fb_reviews", function(req, res) {
+	var name = req.query.name;
+
+	fs.readFile('public/reviews/'+name+'_fb.json', (err, data) => {
+		if (err) throw err;
+
+		var reviews = JSON.parse(data);
+
+		res.json({ reviews });
+	});
+});
+
+app.post("/get_gr_reviews", function(req, res) {
+	var name = req.query.name;
+
+	fs.readFile('public/reviews/'+name+'_gr.json', (err, data) => {
+		if (err) throw err;
+
+		var reviews = JSON.parse(data);
+
+		res.json({ reviews });
+	});
 });
 
 // Add new site details to list

@@ -1,0 +1,16 @@
+<div class="modal-header">
+	<h3>Run Selected</h3>
+</div>
+<form ng-submit="submit()">
+<div class="modal-body">
+	<div class="text-sm" ng-repeat="v in data">
+		<label for="chk_{{v.name}}">
+			<input id="chk_{{v.name}}" type="checkbox" ng-model="v.selected" /> {{v.name}}
+		</label>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="submit" class="btn btn-primary">Run Selected</button>
+    <button class="btn btn-warning" ng-click="cancel($event)">Cancel</button>
+</div>
+</form>

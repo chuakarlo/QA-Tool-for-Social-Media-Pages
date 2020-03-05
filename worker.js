@@ -1,8 +1,11 @@
+require('events').EventEmitter.defaultMaxListeners = 15;
+
 let throng = require('throng');
 let Queue = require("bull");
 
-let REDIS_URL = process.env.REDIS_URL || "redis://127.0.0.1:6379";
-let workers = process.env.WEB_CONCURRENCY || 1;
+let REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379/0";
+// let REDIS_URL = process.env.REDIS_URL || "redis-19222.c80.us-east-1-2.ec2.cloud.redislabs.com:19222";
+let workers = process.env.WEB_CONCURRENCY || 2;
 let maxJobsPerWorker = 50;
 let workQueue = new Queue('work', REDIS_URL);
 

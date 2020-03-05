@@ -9,11 +9,18 @@ body {
 
 #sidebar-wrapper {
   min-height: 100vh;
-  margin-left: -15rem;
   -webkit-transition: margin .25s ease-out;
   -moz-transition: margin .25s ease-out;
   -o-transition: margin .25s ease-out;
   transition: margin .25s ease-out;
+}
+
+#page-content-wrapper {
+  min-height: 100vh;
+  -webkit-transition: padding .25s ease-out;
+  -moz-transition: padding .25s ease-out;
+  -o-transition: padding .25s ease-out;
+  transition: padding .25s ease-out;
 }
 
 #sidebar-wrapper .sidebar-heading {
@@ -25,25 +32,44 @@ body {
   width: 15rem;
 }
 
-#page-content-wrapper {
-  min-width: 100vw;
-}
-
 #wrapper.toggled #sidebar-wrapper {
   margin-left: 0;
 }
 
 @media (min-width: 768px) {
   #sidebar-wrapper {
-    margin-left: 0;
+    z-index: 2;
+    position: absolute;
+    top: 6%;
+    width: 15%;
+    left: 0;
   }
 
   #page-content-wrapper {
-    min-width: 0;
+    z-index: 1;
+    position: fixed;
     width: 100%;
+    padding-left: 15%;
+    top: 6%;
   }
 
   #wrapper.toggled #sidebar-wrapper {
-    margin-left: -15rem;
+    margin-left: -15%;
+  }
+
+  #wrapper.toggled #page-content-wrapper {
+    padding-left: 0;
+  }
+
+  .tableFixHead {
+    overflow-y: auto;
+    height: 70vh;
+  }
+  .tableFixHead thead th {
+    position: sticky;
+    top: 0;
+  }
+  th {
+    background:#fff;
   }
 }

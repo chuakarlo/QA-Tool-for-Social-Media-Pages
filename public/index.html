@@ -44,8 +44,22 @@ Navigation bar basics
       !-->  
     </ul>
   </div>
+  <div class=" mr-2 py-1 px-3 border" ng-if="run_all_status">
+    <span class="text-white"><strong>{{run_all_status}}</strong></span>
+  </div>
+  <div class="pr-2">
+    <button class="btn btn-info" ng-click="run_all()">Run All</button>
+  </div>
+  <div ng-app="notes" ng-controller="RunModalCtrl" class="pr-2">
+    <button class="btn btn-info" ng-click="open()">Run Selected</button>
+  </div>
+  <div class="pr-2">
+    <button class="btn btn-info"
+              ng-csv="getArray" csv-header="getHeader()" filename="{{ filename }}" field-separator="{{ separator }}"
+              >Export to CSV</button>
+  </div>
   <div ng-app="notes" ng-controller="ModalCtrl">
-    <button class="btn btn-primary" ng-click="open()">Add Site</button>
+    <button class="btn btn-warning" ng-click="open()">+</button>
   </div>
 </nav>
 
@@ -57,10 +71,11 @@ Container basics
 
 <div class="d-flex" id="wrapper">
 <!-- Sidebar -->
-    <div class="bg-light border-right" id="sidebar-wrapper" style="margin-top: 3px;">
-      	<div ng-if="menus" class="list-group list-group-flush text-sm" ng-repeat="(k,v) in menus">
+    <div class="bg-light border-right" id="sidebar-wrapper">
+        <div ng-if="menus" class="list-group list-group-flush text-sm" ng-repeat="(k,v) in menus">
+          <!-- <a ng-class="{true: 'disabled', false: ''}[fetch_tp]" href="#/" ng-click="load_data(v)" class="list-group-item list-group-item-action bg-light">{{v.name}}</a> -->
           <a href="#/" ng-click="load_data(v)" class="list-group-item list-group-item-action bg-light">{{v.name}}</a>
-    	</div>
+      </div>
     </div>
 <!-- sidebar-->
 
@@ -105,4 +120,6 @@ Scripts
   <script src="js/fetch.min.js"> </script>   
   <script src="js/request.min.js"> </script>  
   <script data-require="ui-bootstrap@*" data-semver="2.5.0" src="https://cdn.rawgit.com/angular-ui/bootstrap/gh-pages/ui-bootstrap-tpls-2.5.0.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-csv/0.3.6/ng-csv.min.js" integrity="sha256-13FuctLtwifPuI5sBG2biEIn48jDzv/Y4FhIq+BrBkg=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.5.5/angular-sanitize.min.js" integrity="sha256-Cs9EoTB6gmatUKro5B0mTYE/o9CwsCyeWPOTIgl7hYw=" crossorigin="anonymous"></script>
 </html>

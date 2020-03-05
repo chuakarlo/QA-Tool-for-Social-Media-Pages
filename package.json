@@ -9,9 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "angular-sanitize": "^1.5.5",
     "async": "^3.1.0",
     "bull": "^3.12.1",
     "express": "^4.17.1",
+    "ng-csv": "^0.3.6",
     "puppeteer": "^1.20.0",
     "sqlite3": "^4.1.0",
     "throng": "^4.0.0",
