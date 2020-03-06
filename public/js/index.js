@@ -9,7 +9,7 @@ var stop = {};
 $rootScope.numJobs = 0;
 $rootScope.numStop = 0;
 
-$scope.filename = $filter('date')(new Date(), 'yyyyMMddHHmm');
+$scope.filename = $filter('date')(new Date(), 'yyyyMMddHHmm') + ".csv";
 $scope.getArray = [];
 $scope.separator = "|";
 
