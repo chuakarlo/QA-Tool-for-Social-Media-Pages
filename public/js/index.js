@@ -105,9 +105,11 @@ async function updateJobs() {
                 $scope.fetch_fb = false;
                 $scope.fetch_gr = false;
                 $scope.run_all_status = "Run All Completed";
+                console.log("Run All Completed");
                 $rootScope.run_all_flag = false;
                 populateCsv();
             } else {
+                console.log("Progress... "+((numJobs-Object.keys(stop).length)/numJobs*100).toFixed(2)+"%");
                 $scope.run_all_status = "Progress... "+((numJobs-Object.keys(stop).length)/numJobs*100).toFixed(2)+"%";
             }
         });
