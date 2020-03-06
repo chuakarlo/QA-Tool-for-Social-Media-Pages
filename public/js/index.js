@@ -5,7 +5,9 @@ var dataSource = $http.get('sites.json');
 
 var jobs = {};
 var stop = {};
-var numJobs = 0;
+
+$rootScope.numJobs = 0;
+$rootScope.numStop = 0;
 
 $scope.filename = $filter('date')(new Date(), 'yyyyMMddHHmm');
 $scope.getArray = [];
@@ -24,6 +26,8 @@ if (dataSource) {
 
 $scope.url_;
 $rootScope.run_all_flag;
+$rootScope.menu_to_run = [];
+$rootScope.menu_next = 0;
 $scope.canExportFlag;
 
 $scope.$on('$routeChangeStart', function(event,next,current) { 
@@ -33,24 +37,36 @@ $scope.$on('$routeChangeStart', function(event,next,current) {
 
 function populateCsv() {
     $rootScope.menus.forEach(function(v) {
-        $http.get('reviews/'+v.name+'_tp.json').success(function(data) {
+        var tp_get = $http.get('reviews/'+v.name+'_tp.json');
+        tp_get.success(function(data) {
             data.forEach(function(d) {
                 $scope.getArray.push({a: v.name, b: "Trustpilot", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: d.article, f: d.replies, g: d.url});
             });
         });
+        tp_get.error(function(data) {
+            
+        });
 
         console.log($scope.getArray);
 
-        $http.get('reviews/'+v.name+'_fb.json').success(function(data) {
+        var fb_get = $http.get('reviews/'+v.name+'_fb.json');
+        fb_get.success(function(data) {
             data.forEach(function(d) {
                 $scope.getArray.push({a: v.name, b: "Facebook", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: d.article, f: d.replies, g: d.url});
             });
         });
+        fb_get.error(function(data) {
+            
+        });
 
-        $http.get('/reviews/'+v.name+'_gr.json').success(function(data) {
+        var gr_get = $http.get('/reviews/'+v.name+'_gr.json');
+        gr_get.success(function(data) {
             data.forEach(function(d) {
                 $scope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: d.article, f: d.replies, g: d.url});
             });
+        });
+        gr_get.error(function(data) {
+            
         });
     });
 
@@ -98,19 +114,38 @@ async function updateJobs() {
                     $interval.cancel(stop[id]);
                     delete stop[id];
                     delete jobs[id];
+
+                    $rootScope.numStop--;
+
+                    console.log($rootScope.menu_next);
+                    console.log($rootScope.menu_to_run.length);
+
+                    console.log($rootScope.menu_to_run);
+
+                    if ($rootScope.menu_next < $rootScope.menu_to_run.length && Object.keys(jobs).length == 1) {
+                        var menu = $rootScope.menu_to_run[$rootScope.menu_next];
+                        $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 2000)
+            
+                        $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
+                        
+                        $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 6000)
+
+                        $rootScope.menu_next++;
+                    }
                 }
             }
-            if (isEmpty(stop)) {
+            if ($rootScope.numStop == 0) {
+                $rootScope.menu_next = 0;
                 $scope.fetch_tp = false;
                 $scope.fetch_fb = false;
                 $scope.fetch_gr = false;
-                $scope.run_all_status = "Run All Completed";
+                $rootScope.run_all_status = "Run All Completed";
                 console.log("Run All Completed");
                 $rootScope.run_all_flag = false;
                 populateCsv();
             } else {
-                console.log("Progress... "+((numJobs-Object.keys(stop).length)/numJobs*100).toFixed(2)+"%");
-                $scope.run_all_status = "Progress... "+((numJobs-Object.keys(stop).length)/numJobs*100).toFixed(2)+"%";
+                console.log("Progress... "+(($rootScope.numJobs-$rootScope.numStop)/$rootScope.numJobs*100).toFixed(2)+"%");
+                $rootScope.run_all_status = "Progress... "+(($rootScope.numJobs-$rootScope.numStop)/$rootScope.numJobs*100).toFixed(2)+"%";
             }
         });
     }
@@ -144,17 +179,29 @@ async function updateJobs() {
 
 $scope.run_all = function() {
     $rootScope.run_all_flag = true;
+    $rootScope.run_all_status = "Progress... 0.00%";
+    $rootScope.menu_to_run = $rootScope.menus;
 
-    $rootScope.menus.forEach(function(v) {
-        console.log(v.name);
-        // get_all_reviews(v);
-        $timeout(function() {$rootScope.get_tp(v);console.log('1');}, 2000)
+    $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 2000)
         
-        $timeout(function() {$rootScope.get_fb(v);console.log('2');}, 4000)
+    $timeout(function() {$rootScope.get_fb($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_fb");}, 4000)
+    
+    $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 6000)
+
+    $rootScope.menu_next = 1;
+
+    $rootScope.numJobs = $rootScope.menu_to_run.length * 3;
+    $rootScope.numStop = $rootScope.menu_to_run.length * 3;
+
+    // $rootScope.menus.forEach(function(v) {
+    //     console.log(v.name);
+    //     // get_all_reviews(v);
+    //     $timeout(function() {$rootScope.get_tp(v);console.log('1');}, 2000)
         
-        $timeout(function() {$rootScope.get_gr(v);console.log('3');}, 6000)
+    //     $timeout(function() {$rootScope.get_fb(v);console.log('2');}, 4000)
         
-    });
+    //     $timeout(function() {$rootScope.get_gr(v);console.log('3');}, 6000)
+    // });
 }
 
 //Get Reviews Functions
@@ -184,7 +231,10 @@ $rootScope.get_tp = function(v) {
 
         request.query(query).then(function(res) {
             jobs[res.data.id] = { id: res.data.id, name: v.name + '_tp' };
-            numJobs++;
+            if (!$rootScope.run_all_flag) {
+                $rootScope.numJobs++;
+                $rootScope.numStop++;
+            }
 
             stop[res.data.id] = $interval(updateJobs, 8000);
         })
@@ -202,7 +252,10 @@ $rootScope.get_fb = function(v) {
 
         request.query(query).then(function(res) {
             jobs[res.data.id] = { id: res.data.id, name: v.name + '_fb' };
-            numJobs++;
+            if (!$rootScope.run_all_flag) {
+                $rootScope.numJobs++;
+                $rootScope.numStop++;
+            }
 
             stop[res.data.id] = $interval(updateJobs, 8000);
         })
@@ -220,7 +273,10 @@ $rootScope.get_gr = function(v) {
 
         request.query(query).then(function(res) {
             jobs[res.data.id] = { id: res.data.id, name: v.name + '_gr' };
-            numJobs++;
+            if (!$rootScope.run_all_flag) {
+                $rootScope.numJobs++;
+                $rootScope.numStop++;
+            }
 
             stop[res.data.id] = $interval(updateJobs, 8000);
         })
@@ -351,19 +407,34 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
 
     $scope.run_selected = function() {
         $rootScope.run_all_flag = true;
+        $rootScope.run_all_status = "Progress... 0.00%";
+        $rootScope.menu_to_run = [];
 
         $scope.data.forEach(function(v) {
             if (v.selected) {
-                console.log(v.name);
-                // get_all_reviews(v);
-                $timeout(function() {$rootScope.get_tp(v);console.log('1');}, 2000)
-                
-                $timeout(function() {$rootScope.get_fb(v);console.log('2');}, 4000)
-                
-                $timeout(function() {$rootScope.get_gr(v);console.log('3');}, 6000)
+                $rootScope.menu_to_run.push(v);
             }
-            
+                // console.log(v.name);
+                // get_all_reviews(v);
+                // $timeout(function() {$rootScope.get_tp(v);console.log('1');}, 2000)
+                
+                // $timeout(function() {$rootScope.get_fb(v);console.log('2');}, 4000)
+                
+                // $timeout(function() {$rootScope.get_gr(v);console.log('3');}, 6000)
         });
+
+        console.log($rootScope.menu_to_run[0]);
+
+        $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 2000)
+        
+        $timeout(function() {$rootScope.get_fb($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_fb");}, 4000)
+        
+        $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 6000)
+
+        $rootScope.numJobs = $rootScope.menu_to_run.length * 3;
+        $rootScope.numStop = $rootScope.menu_to_run.length * 3;
+
+        $rootScope.menu_next = 1;
     }
 
     $scope.cancel = function($event){

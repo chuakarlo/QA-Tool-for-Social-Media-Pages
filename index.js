@@ -3,6 +3,7 @@ var app = express();
 var server = require('http').Server(app);
 var bodyParser = require('body-parser');
 var fs = require('fs');
+var path = require('path');
 var util = require('util');
 var Queue = require('bull');
 
@@ -26,20 +27,42 @@ let workQueue = new Queue('work', REDIS_URL);
 
 /**/
 app.post("/job_tp", async(req, res) => {
+	// deleteFiles();
 	let job = await workQueue.add({ url: req.query.v, type: 'tp' });
 	res.json({ id: job.id });
 });
 
 app.post("/job_fb", async(req, res) => {
+	// deleteFiles();
 	let job = await workQueue.add({ url: req.query.v, type: 'fb' });
 	res.json({ id: job.id });
 });
 
 app.post("/job_gr", async(req, res) => {
+	// deleteFiles();
 	let job = await workQueue.add({ url: req.query.v, type: 'gr' });
 	res.json({ id: job.id });
 });
 
+
+function deleteFiles() {
+	const directory = 'public/reviews';
+
+	fs.readdir(directory, (err, files) => {
+	  if (err) console.log(err);
+
+	  for (const file of files) {
+	    fs.unlink(path.join(directory, file), err => {
+	      if (err) console.log(err);
+	    });
+	 //    const writeFile = util.promisify(fs.writeFile);
+
+		// writeFile(path.join(directory, file), "[]")
+		// .then(() => {console.log('success');})
+		// .catch(error => console.log(error));
+	  }
+	});
+}
 // app.post("/job/:id", async(req, res) => {
 // 	let id = req.params.id;
 // 	let job = await workQueue.getJob(id);
