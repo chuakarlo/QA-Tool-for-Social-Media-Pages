@@ -18,6 +18,7 @@ $scope.getHeader = function () {return ["Site", "Social", "Date", "Acc name", "R
 if (dataSource) {
     dataSource.success(function(data) {
         $rootScope.menus = data;
+        populateCsv();
     });
     dataSource.error(function(data) {
         alert("AJAX failed to load data.");
@@ -36,18 +37,18 @@ $scope.$on('$routeChangeStart', function(event,next,current) {
 })
 
 function populateCsv() {
+    $scope.getArray = [];
     $rootScope.menus.forEach(function(v) {
         var tp_get = $http.get('reviews/'+v.name+'_tp.json');
+
         tp_get.success(function(data) {
             data.forEach(function(d) {
                 $scope.getArray.push({a: v.name, b: "Trustpilot", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: d.article, f: d.replies, g: d.url});
             });
         });
-        tp_get.error(function(data) {
+        tp_get.error(function(error) {
             
         });
-
-        console.log($scope.getArray);
 
         var fb_get = $http.get('reviews/'+v.name+'_fb.json');
         fb_get.success(function(data) {
@@ -55,7 +56,7 @@ function populateCsv() {
                 $scope.getArray.push({a: v.name, b: "Facebook", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: d.article, f: d.replies, g: d.url});
             });
         });
-        fb_get.error(function(data) {
+        fb_get.error(function(error) {
             
         });
 
@@ -65,7 +66,7 @@ function populateCsv() {
                 $scope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: d.article, f: d.replies, g: d.url});
             });
         });
-        gr_get.error(function(data) {
+        gr_get.error(function(error) {
             
         });
     });
@@ -80,28 +81,7 @@ function populateCsv() {
 $scope.load_data = function(v) {
     $scope.selectedMenu = v;
     $scope.reviews = null;
-    populateCsv();
 }
-
-// async function updateJobs() {
-//     for (let id of Object.keys(jobs)) {
-//         var query = {
-//             url : '/job/'+id,
-//         }
-//         request.query(query).then(function(res) {
-//             if (!!jobs[id]) {
-//                 $scope.reviews = res.data.reviews;
-//                 if (res.data.reviews !== null) {
-//                     $scope.fetch_tp = false;
-//                     $scope.fetch_fb = false;
-//                     $scope.fetch_gr = false;
-//                     $interval.cancel(stop);
-//                     jobs = {};
-//                 }
-//             }
-//         });
-//     }
-// }
 
 async function updateJobs() {
     for (let id of Object.keys(jobs)) {
@@ -116,11 +96,6 @@ async function updateJobs() {
                     delete jobs[id];
 
                     $rootScope.numStop--;
-
-                    console.log($rootScope.menu_next);
-                    console.log($rootScope.menu_to_run.length);
-
-                    console.log($rootScope.menu_to_run);
 
                     if ($rootScope.menu_next < $rootScope.menu_to_run.length && Object.keys(jobs).length == 1) {
                         var menu = $rootScope.menu_to_run[$rootScope.menu_next];
@@ -151,36 +126,12 @@ async function updateJobs() {
     }
 }
 
-// async function get_all_reviews(v) {
-//     var tp_query = {
-//         url : '/job_tp?v='+v.tp,
-//     }
-//     var fb_query = {
-//         url : '/job_fb?v='+v.fb,
-//     }
-//     var gr_query = {
-//         url : '/job_gr?v='+v.gr,
-//     }
-
-//     $scope.reviews = [];
-
-//     request.query(tp_query).then(function(res) {
-//         jobs[res.data.id] = { id: res.data.id };
-//     })
-
-//     request.query(fb_query).then(function(res) {
-//         jobs[res.data.id] = { id: res.data.id };
-//     })
-
-//     request.query(gr_query).then(function(res) {
-//         jobs[res.data.id] = { id: res.data.id };
-//     })
-// }
-
 $scope.run_all = function() {
     $rootScope.run_all_flag = true;
     $rootScope.run_all_status = "Progress... 0.00%";
     $rootScope.menu_to_run = $rootScope.menus;
+
+    $rootScope.refreshFiles();
 
     $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 2000)
         
@@ -192,33 +143,17 @@ $scope.run_all = function() {
 
     $rootScope.numJobs = $rootScope.menu_to_run.length * 3;
     $rootScope.numStop = $rootScope.menu_to_run.length * 3;
-
-    // $rootScope.menus.forEach(function(v) {
-    //     console.log(v.name);
-    //     // get_all_reviews(v);
-    //     $timeout(function() {$rootScope.get_tp(v);console.log('1');}, 2000)
-        
-    //     $timeout(function() {$rootScope.get_fb(v);console.log('2');}, 4000)
-        
-    //     $timeout(function() {$rootScope.get_gr(v);console.log('3');}, 6000)
-    // });
 }
 
-//Get Reviews Functions
-// get_tp = function(v) {
-//     $scope.fetch_tp = true;
-//     var query = {
-//         url : '/job_tp?v='+v.tp,
-//     }
+$rootScope.refreshFiles = function() {
+    var query = {
+        url : '/refreshFiles'
+    }
 
-//     $scope.reviews = [];
-
-//     request.query(query).then(function(res) {
-//         jobs[res.data.id] = { id: res.data.id, name: v.name + '_tp' };
-//     })
-
-//     stop = $interval(updateJobs, 8000);
-// }
+    request.query(query).then(function() {
+        console.log('Files refreshed');
+    });
+}
 
 $rootScope.get_tp = function(v) {
     if ((!$scope.fetch_tp && !$scope.fetch_fb && !$scope.fetch_gr) || $rootScope.run_all_flag) {
@@ -232,6 +167,8 @@ $rootScope.get_tp = function(v) {
         request.query(query).then(function(res) {
             jobs[res.data.id] = { id: res.data.id, name: v.name + '_tp' };
             if (!$rootScope.run_all_flag) {
+                // $rootScope.refreshFiles();
+                $rootScope.run_all_status = "Progress... 0.00%";
                 $rootScope.numJobs++;
                 $rootScope.numStop++;
             }
@@ -253,6 +190,8 @@ $rootScope.get_fb = function(v) {
         request.query(query).then(function(res) {
             jobs[res.data.id] = { id: res.data.id, name: v.name + '_fb' };
             if (!$rootScope.run_all_flag) {
+                // $rootScope.refreshFiles();
+                $rootScope.run_all_status = "Progress... 0.00%";
                 $rootScope.numJobs++;
                 $rootScope.numStop++;
             }
@@ -274,6 +213,8 @@ $rootScope.get_gr = function(v) {
         request.query(query).then(function(res) {
             jobs[res.data.id] = { id: res.data.id, name: v.name + '_gr' };
             if (!$rootScope.run_all_flag) {
+                // $rootScope.refreshFiles();
+                $rootScope.run_all_status = "Progress... 0.00%";
                 $rootScope.numJobs++;
                 $rootScope.numStop++;
             }
@@ -326,54 +267,6 @@ function isEmpty(obj) {
     }
     return true;
 }
-
-// $scope.get_tp = function(v) {
-//     $scope.fetch_tp = true;
-//     var query = {
-//         url : '/job_tp?v='+v,
-//     }
-
-//     $scope.show_reviews = "Trustpilot Reviews";
-//     $scope.reviews = [];
-
-//     request.query(query).then(function(res) {
-//         jobs[res.data.id] = { id: res.data.id };
-//     })
-
-//     stop = $interval(updateJobs, 8000);
-// }
-
-// $scope.get_fb = function(v) {
-//     $scope.fetch_fb = true;
-//     var query = {
-//         url : '/job_fb?v='+v,
-//     }
-
-//     $scope.show_reviews = "Facebook Reviews";
-//     $scope.reviews = [];
-
-//     request.query(query).then(function(res) {
-//         jobs[res.data.id] = { id: res.data.id };
-//     })
-
-//     stop = $interval(updateJobs, 8000);
-// }
-
-// $scope.get_gr = function(v) {
-//     $scope.fetch_gr = true;
-//     var query = {
-//         url : '/job_gr?v='+v,
-//     }
-
-//     $scope.show_reviews = "Google Reviews";
-//     $scope.reviews = [];
-
-//     request.query(query).then(function(res) {
-//         jobs[res.data.id] = { id: res.data.id };
-//     })
-
-//     stop = $interval(updateJobs, 8000);
-// }
 });
 
 app.controller('RunModalCtrl', function($scope, $uibModal) {
@@ -398,8 +291,6 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
     });
 
     $scope.submit = function() {
-        console.log($scope.data);
-
         $scope.run_selected();
 
         $uibModalInstance.close("Ok");
@@ -410,20 +301,13 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
         $rootScope.run_all_status = "Progress... 0.00%";
         $rootScope.menu_to_run = [];
 
+        $rootScope.refreshFiles();
+
         $scope.data.forEach(function(v) {
             if (v.selected) {
                 $rootScope.menu_to_run.push(v);
             }
-                // console.log(v.name);
-                // get_all_reviews(v);
-                // $timeout(function() {$rootScope.get_tp(v);console.log('1');}, 2000)
-                
-                // $timeout(function() {$rootScope.get_fb(v);console.log('2');}, 4000)
-                
-                // $timeout(function() {$rootScope.get_gr(v);console.log('3');}, 6000)
         });
-
-        console.log($rootScope.menu_to_run[0]);
 
         $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 2000)
         

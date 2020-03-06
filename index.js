@@ -44,6 +44,11 @@ app.post("/job_gr", async(req, res) => {
 	res.json({ id: job.id });
 });
 
+app.post("/refreshFiles", async(req, res) => {
+	deleteFiles();
+
+	res.json({});
+});
 
 function deleteFiles() {
 	const directory = 'public/reviews';
@@ -118,9 +123,12 @@ app.post("/get_tp_reviews", function(req, res) {
 	var name = req.query.name;
 
 	fs.readFile('public/reviews/'+name+'_tp.json', (err, data) => {
-		if (err) throw err;
-
-		var reviews = JSON.parse(data);
+		var reviews;
+		if (err) {
+			reviews = [];
+		} else {
+			reviews = JSON.parse(data);
+		}
 
 		res.json({ reviews });
 	});
@@ -130,9 +138,12 @@ app.post("/get_fb_reviews", function(req, res) {
 	var name = req.query.name;
 
 	fs.readFile('public/reviews/'+name+'_fb.json', (err, data) => {
-		if (err) throw err;
-
-		var reviews = JSON.parse(data);
+		var reviews;
+		if (err) {
+			reviews = [];
+		} else {
+			reviews = JSON.parse(data);
+		}
 
 		res.json({ reviews });
 	});
@@ -142,9 +153,12 @@ app.post("/get_gr_reviews", function(req, res) {
 	var name = req.query.name;
 
 	fs.readFile('public/reviews/'+name+'_gr.json', (err, data) => {
-		if (err) throw err;
-
-		var reviews = JSON.parse(data);
+		var reviews;
+		if (err) {
+			reviews = [];
+		} else {
+			reviews = JSON.parse(data);
+		}
 
 		res.json({ reviews });
 	});
