@@ -5,6 +5,7 @@ var dataSource = $http.get('sites.json');
 
 var jobs = {};
 var stop = {};
+var sites_not_run = [];
 
 $rootScope.numJobs = 0;
 $rootScope.numStop = 0;
@@ -42,7 +43,6 @@ function populateCsv() {
         var tp_get = $http.get('reviews/'+v.name+'_tp.json');
 
         tp_get.success(function(data) {
-            console.log(data);
             if (data) {
                 data.forEach(function(d) {
                     var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'") : "";
@@ -57,7 +57,6 @@ function populateCsv() {
 
         var fb_get = $http.get('reviews/'+v.name+'_fb.json');
         fb_get.success(function(data) {
-            console.log(data);
             if (data) {
                 data.forEach(function(d) {
                     var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'") : "";
@@ -72,13 +71,11 @@ function populateCsv() {
 
         var gr_get = $http.get('/reviews/'+v.name+'_gr.json');
         gr_get.success(function(data) {
-            console.log(data);
             if (data) {
                 data.forEach(function(d) {
                     var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'") : "";
                     var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'") : "";
                     $scope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
-                    console.log($scope.getArray);
                 });
             }
         });
@@ -106,8 +103,13 @@ async function updateJobs() {
         }
         request.query(query).then(function(res) {
             if (!!jobs[id]) {
-                if (res.data.reviews !== null) {
+                if (res.data.reviews !== null || res.status != 200) {
                     $interval.cancel(stop[id]);
+
+                    if (res.status != 200) {
+                        sites_not_run.push(jobs[id].site + " (" + jobs[id].social + ")");
+                    }
+                    
                     delete stop[id];
                     delete jobs[id];
 
@@ -134,6 +136,18 @@ async function updateJobs() {
                 console.log("Run All Completed");
                 $rootScope.run_all_flag = false;
                 populateCsv();
+
+                if (sites_not_run.length > 0) {
+                    var sites_text = sites_not_run[0];
+
+                    for (let i = 1; i < sites_not_run.length; i++) {
+                        sites_text += "\n" + sites_not_run[i];
+                    }
+
+                    alert("Sites not run:\n\n" + sites_text);
+
+                    sites_not_run = [];
+                }
             } else {
                 console.log("Progress... "+(($rootScope.numJobs-$rootScope.numStop)/$rootScope.numJobs*100).toFixed(2)+"%");
                 $rootScope.run_all_status = "Progress... "+(($rootScope.numJobs-$rootScope.numStop)/$rootScope.numJobs*100).toFixed(2)+"%";
@@ -181,7 +195,7 @@ $rootScope.get_tp = function(v) {
         $scope.reviews = [];
 
         request.query(query).then(function(res) {
-            jobs[res.data.id] = { id: res.data.id, name: v.name + '_tp' };
+            jobs[res.data.id] = { id: res.data.id, name: v.name + '_tp', site: v.name, social: 'Trustpilot' };
             if (!$rootScope.run_all_flag) {
                 // $rootScope.refreshFiles();
                 $rootScope.run_all_status = "Progress... 0.00%";
@@ -204,7 +218,7 @@ $rootScope.get_fb = function(v) {
         $scope.reviews = [];
 
         request.query(query).then(function(res) {
-            jobs[res.data.id] = { id: res.data.id, name: v.name + '_fb' };
+            jobs[res.data.id] = { id: res.data.id, name: v.name + '_fb', site: v.name, social: 'Facebook' };
             if (!$rootScope.run_all_flag) {
                 // $rootScope.refreshFiles();
                 $rootScope.run_all_status = "Progress... 0.00%";
@@ -227,7 +241,7 @@ $rootScope.get_gr = function(v) {
         $scope.reviews = [];
 
         request.query(query).then(function(res) {
-            jobs[res.data.id] = { id: res.data.id, name: v.name + '_gr' };
+            jobs[res.data.id] = { id: res.data.id, name: v.name + '_gr', site: v.name, social: 'Google Reviews' };
             if (!$rootScope.run_all_flag) {
                 // $rootScope.refreshFiles();
                 $rootScope.run_all_status = "Progress... 0.00%";
