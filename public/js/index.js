@@ -42,9 +42,14 @@ function populateCsv() {
         var tp_get = $http.get('reviews/'+v.name+'_tp.json');
 
         tp_get.success(function(data) {
-            data.forEach(function(d) {
-                $scope.getArray.push({a: v.name, b: "Trustpilot", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: d.article, f: d.replies, g: d.url});
-            });
+            console.log(data);
+            if (data) {
+                data.forEach(function(d) {
+                    var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'") : "";
+                    var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'") : "";
+                    $scope.getArray.push({a: v.name, b: "Trustpilot", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
+                });
+            }
         });
         tp_get.error(function(error) {
             
@@ -52,9 +57,14 @@ function populateCsv() {
 
         var fb_get = $http.get('reviews/'+v.name+'_fb.json');
         fb_get.success(function(data) {
-            data.forEach(function(d) {
-                $scope.getArray.push({a: v.name, b: "Facebook", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: d.article, f: d.replies, g: d.url});
-            });
+            console.log(data);
+            if (data) {
+                data.forEach(function(d) {
+                    var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'") : "";
+                    var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'") : "";
+                    $scope.getArray.push({a: v.name, b: "Facebook", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
+                });
+            }
         });
         fb_get.error(function(error) {
             
@@ -62,9 +72,15 @@ function populateCsv() {
 
         var gr_get = $http.get('/reviews/'+v.name+'_gr.json');
         gr_get.success(function(data) {
-            data.forEach(function(d) {
-                $scope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: d.article, f: d.replies, g: d.url});
-            });
+            console.log(data);
+            if (data) {
+                data.forEach(function(d) {
+                    var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'") : "";
+                    var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'") : "";
+                    $scope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
+                    console.log($scope.getArray);
+                });
+            }
         });
         gr_get.error(function(error) {
             
