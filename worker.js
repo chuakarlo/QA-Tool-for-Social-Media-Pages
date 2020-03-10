@@ -80,8 +80,18 @@ async function main_tp(url) {
           const u_text = await page.$$eval(selector, am => am.filter(e => e.href).map(e => e.href))
     
           //get article text
-          const p = await page.$$('.review-content__body p');
-          const p_text = await (await p[i].getProperty('innerText')).jsonValue();
+          const body = await page.$$('.review-content__body');
+
+          const p = await body[i].$('.review-content__text');
+
+          var p_text = "";
+
+          if (p) {
+            p_text = await (await p.getProperty('innerText')).jsonValue();
+          } else {
+            const h2 = await body[i].$('.review-content__title a');
+            p_text = await (await h2.getProperty('innerText')).jsonValue();
+          }
 
           //get replies
           const s_reviews = ('.review__company-reply');
@@ -146,11 +156,12 @@ async function main_gr(url) {
     await page.setViewport({ width: 1280, height: 800 })
     //needs to click on the see all reviews
     await page.goto(url,{ waitUntil: 'networkidle0',timeout: 3000000 });
-          
-    await Promise.all([
-      page.click('.jqnFjrOWMVU__button'),
-      page.waitForNavigation({ waitUntil: 'networkidle0' }),
-    ]);
+
+    await page.waitForSelector('.jqnFjrOWMVU__right');
+
+    await page.click('.jqnFjrOWMVU__button');
+
+    await page.waitForNavigation({ waitUntil: 'networkidle0' });
     
     for(i=0; i < 5; i++){
       await page.evaluate(GRScroll);
