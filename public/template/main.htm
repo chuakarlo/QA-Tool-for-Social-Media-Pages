@@ -1,7 +1,15 @@
 <!-- Container -->
 <div class="container-fluid" ng-if="selectedMenu">
   <br>
-  <h6>{{selectedMenu.name}}</h6>
+  <div class="row">
+    <h5 class="col-md-11 vertical-align">{{selectedMenu.name}}</h5>
+    <div ng-app="notes" ng-controller="ModalCtrl" class="pr-2">
+      <button class="btn btn-warning" ng-click="open('edit')"><span class="fa fa-pencil-square-o"></span></button>
+    </div>
+    <div ng-app="notes" ng-controller="ModalCtrl">
+      <button class="btn btn-danger" ng-click="open('delete')"><span class="fa fa-trash"></span></button>
+    </div>
+  </div>
   <hr>
   <div>
       <!-- <button type="button" class="btn btn-info text-sm" ng-click="get_tp(selectedMenu.tp)" ng-disabled="fetch_fb || fetch_gr || fetch_tp || selectedMenu.tp === 'undefined'">Trust Pilot <i class='fa fa-cog fa-spin' ng-show="fetch_tp"></i></button> -->

@@ -92,7 +92,7 @@ function populateCsv() {
 }
 
 $scope.load_data = function(v) {
-    $scope.selectedMenu = v;
+    $rootScope.selectedMenu = v;
     $scope.reviews = null;
 }
 
@@ -357,11 +357,23 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
     }
 });
 
-app.controller('ModalCtrl', function($scope, $uibModal) {
+app.controller('ModalCtrl', function(request, $rootScope, $scope, $uibModal) {
+    $scope.open = function(type) {
+        var templateUrl;
+        
+        if (type == 'add') {
+            $rootScope.type = 'add';
+            templateUrl = "template/addModalContent.htm";
+        } else if (type == 'edit') {
+            $rootScope.type = 'edit';
+            templateUrl = "template/editModalContent.htm";
+        } else if (type == 'delete') {
+            $rootScope.type = 'delete';
+            templateUrl = "template/deleteModalContent.htm";
+        }
 
-    $scope.open = function() {
-        var modalInstance =  $uibModal.open({
-            templateUrl: "template/modalContent.htm",
+        $uibModal.open({
+            templateUrl: templateUrl,
             controller: "ModalContentCtrl",
             windowClass: 'show',
             backdrop: 'static',
@@ -370,15 +382,48 @@ app.controller('ModalCtrl', function($scope, $uibModal) {
     };
 });
 
-app.controller('ModalContentCtrl', function(request, $scope, $window, $uibModalInstance) {
-    $scope.data = {};
+app.controller('ModalContentCtrl', function(request, $rootScope, $scope, $window, $uibModalInstance) {
+    if ($rootScope.type == 'edit' || $rootScope.type == 'delete') {
+        $scope.data = {
+            name: $rootScope.selectedMenu.name,
+            tp_url: $rootScope.selectedMenu.tp,
+            fb_url: $rootScope.selectedMenu.fb,
+            gr_url: $rootScope.selectedMenu.gr
+        }
+    } else {
+        $scope.data = {};
+    }
 
     $scope.submit = function() {
-        $scope.add_site_details($scope.data.name, $scope.data.tp_url, $scope.data.fb_url, $scope.data.gr_url);
+        if ($rootScope.type == 'edit') {
+            $scope.edit_site_details($rootScope.selectedMenu.name, $scope.data.name, $scope.data.tp_url, $scope.data.fb_url, $scope.data.gr_url);
+        } else if ($rootScope.type == 'delete') {
+            $scope.delete_site_details($rootScope.selectedMenu.name);
+        } else {
+            $scope.add_site_details($scope.data.name, $scope.data.tp_url, $scope.data.fb_url, $scope.data.gr_url);
+        }
 
         $uibModalInstance.close("Ok");
 
         $window.location.reload();
+    }
+
+    $scope.delete_site_details = function(name) {
+        var query = {
+            url : '/delete_site_details?name='+name,
+        }
+        request.query(query).then(function(res) {
+            //
+        })
+    }
+
+    $scope.edit_site_details = function(oldname, newname, tp, fb, gr) {
+        var query = {
+            url : '/edit_site_details?oldname='+oldname+'&newname='+newname+'&tp='+tp+'&fb='+fb+'&gr='+gr,
+        }
+        request.query(query).then(function(res) {
+            //
+        })
     }
 
     $scope.add_site_details = function(name, tp, fb, gr) {

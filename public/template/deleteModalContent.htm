@@ -1,0 +1,12 @@
+<div class="modal-header">
+	<h3>Delete Site</h3>
+</div>
+<form ng-submit="submit()">
+<div class="modal-body">
+	Do you really want to delete {{data.name}}?
+</div>
+<div class="modal-footer">
+	<button type="submit" class="btn btn-primary">Yes</button>
+    <button class="btn btn-warning" ng-click="cancel($event)">No</button>
+</div>
+</form>

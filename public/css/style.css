@@ -185,3 +185,8 @@ nav.navbar {
 .individual_button:hover {
   text-decoration: underline !important;
 }
+
+.vertical-align {
+  display: flex;
+  align-items: center;
+}

@@ -188,6 +188,58 @@ app.post("/add_site_details", function(req, res) {
 	});
 });
 
+// Edit site details to list
+app.post("/edit_site_details", function(req, res) {
+	var data = req.query;
+	var sites = null;
+	let newSite = {
+		name: data.newname,
+		tp: data.tp,
+		fb: data.fb,
+		gr: data.gr
+	};
+
+	fs.readFile('public/sites.json', (err, data) => {
+	    if (err) throw err;
+	    const writeFile = util.promisify(fs.writeFile);
+
+	    sites = JSON.parse(data);
+
+	    for (let i = 0; i < sites.length; i++) {
+	    	if (sites[i].name == req.query.oldname) {
+	    		sites[i] = newSite;
+	    	}
+	    }
+
+	    writeFile('public/sites.json', JSON.stringify(sites, null, 2))
+		.then(() => {console.log('success'); res.send('success');})
+		.catch(error => console.log(error));
+	});
+});
+
+// Delete site details to list
+app.post("/delete_site_details", function(req, res) {
+	var data = req.query;
+	var sites = null;
+
+	fs.readFile('public/sites.json', (err, data) => {
+	    if (err) throw err;
+	    const writeFile = util.promisify(fs.writeFile);
+
+	    sites = JSON.parse(data);
+
+	    for (let i = 0; i < sites.length; i++) {
+	    	if (sites[i].name == req.query.name) {
+  				sites.splice(i, 1);
+	    	}
+	    }
+
+	    writeFile('public/sites.json', JSON.stringify(sites, null, 2))
+		.then(() => {console.log('success'); res.send('success');})
+		.catch(error => console.log(error));
+	});
+});
+
 server.listen(port, function() {
   console.log(" [200] " + "Node Status - running at port " + port);
 });
