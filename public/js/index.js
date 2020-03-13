@@ -6,6 +6,7 @@ var dataSource = $http.get('sites.json');
 var jobs = {};
 var stop = {};
 var sites_not_run = [];
+var listOfSitesWithNoLink = [];
 
 $rootScope.numJobs = 0;
 $rootScope.numStop = 0;
@@ -92,8 +93,9 @@ function populateCsv() {
 }
 
 $scope.load_data = function(v) {
+    $rootScope.reviews = [];
+    $rootScope.show_reviews = "";
     $rootScope.selectedMenu = v;
-    $scope.reviews = null;
 }
 
 async function updateJobs() {
@@ -148,6 +150,18 @@ async function updateJobs() {
 
                     sites_not_run = [];
                 }
+
+                if (listOfSitesWithNoLink.length > 0) {
+                    var sites_text = listOfSitesWithNoLink[0];
+
+                    for (let i = 1; i < listOfSitesWithNoLink.length; i++) {
+                        sites_text += "\n" + listOfSitesWithNoLink[i];
+                    }
+
+                    alert("Sites with no links:\n\n" + sites_text);
+
+                    listOfSitesWithNoLink = [];
+                }
             } else {
                 console.log("Progress... "+(($rootScope.numJobs-$rootScope.numStop)/$rootScope.numJobs*100).toFixed(2)+"%");
                 $rootScope.run_all_status = "Progress... "+(($rootScope.numJobs-$rootScope.numStop)/$rootScope.numJobs*100).toFixed(2)+"%";
@@ -187,70 +201,91 @@ $rootScope.refreshFiles = function() {
 
 $rootScope.get_tp = function(v) {
     if ((!$scope.fetch_tp && !$scope.fetch_fb && !$scope.fetch_gr) || $rootScope.run_all_flag) {
-        var query = {
-            url : '/job_tp?v='+v.tp,
-        }
-
-        $scope.fetch_tp = true;
-        $scope.reviews = [];
-
-        request.query(query).then(function(res) {
-            jobs[res.data.id] = { id: res.data.id, name: v.name + '_tp', site: v.name, social: 'Trustpilot' };
-            if (!$rootScope.run_all_flag) {
-                // $rootScope.refreshFiles();
-                $rootScope.run_all_status = "Progress... 0.00%";
-                $rootScope.numJobs++;
-                $rootScope.numStop++;
+        if (!$rootScope.run_all_flag && v.tp == "") {
+            alert("Trustpilot link is not provided");
+        } else if (v.tp != "") {
+            var query = {
+                url : '/job_tp?v='+v.tp,
             }
 
-            stop[res.data.id] = $interval(updateJobs, 8000);
-        })
+            $scope.fetch_tp = true;
+            $rootScope.reviews = [];
+
+            request.query(query).then(function(res) {
+                jobs[res.data.id] = { id: res.data.id, name: v.name + '_tp', site: v.name, social: 'Trustpilot' };
+                if (!$rootScope.run_all_flag) {
+                    // $rootScope.refreshFiles();
+                    $rootScope.run_all_status = "Progress... 0.00%";
+                    $rootScope.numJobs++;
+                    $rootScope.numStop++;
+                }
+
+                stop[res.data.id] = $interval(updateJobs, 8000);
+            })
+        } else {
+            $rootScope.numStop--;
+            listOfSitesWithNoLink.push(v.name + " (Trustpilot)");
+        }
     }
 }
 
 $rootScope.get_fb = function(v) {
     if ((!$scope.fetch_tp && !$scope.fetch_fb && !$scope.fetch_gr) || $rootScope.run_all_flag) {
-        var query = {
-            url : '/job_fb?v='+v.fb,
-        }
-
-        $scope.fetch_fb = true;
-        $scope.reviews = [];
-
-        request.query(query).then(function(res) {
-            jobs[res.data.id] = { id: res.data.id, name: v.name + '_fb', site: v.name, social: 'Facebook' };
-            if (!$rootScope.run_all_flag) {
-                // $rootScope.refreshFiles();
-                $rootScope.run_all_status = "Progress... 0.00%";
-                $rootScope.numJobs++;
-                $rootScope.numStop++;
+        if (!$rootScope.run_all_flag && v.fb == "") {
+            alert("Facebook link is not provided");
+        } else if (v.fb != "") {
+            var query = {
+                url : '/job_fb?v='+v.fb,
             }
 
-            stop[res.data.id] = $interval(updateJobs, 8000);
-        })
+            $scope.fetch_fb = true;
+            $rootScope.reviews = [];
+
+            request.query(query).then(function(res) {
+                jobs[res.data.id] = { id: res.data.id, name: v.name + '_fb', site: v.name, social: 'Facebook' };
+                if (!$rootScope.run_all_flag) {
+                    // $rootScope.refreshFiles();
+                    $rootScope.run_all_status = "Progress... 0.00%";
+                    $rootScope.numJobs++;
+                    $rootScope.numStop++;
+                }
+
+                stop[res.data.id] = $interval(updateJobs, 8000);
+            })
+        } else {
+            $rootScope.numStop--;
+            listOfSitesWithNoLink.push(v.name + " (Facebook)");
+        }
     }
 }
 
 $rootScope.get_gr = function(v) {
     if ((!$scope.fetch_tp && !$scope.fetch_fb && !$scope.fetch_gr) || $rootScope.run_all_flag) {
-        var query = {
-            url : '/job_gr?v='+v.gr,
-        }
-
-        $scope.fetch_gr = true;
-        $scope.reviews = [];
-
-        request.query(query).then(function(res) {
-            jobs[res.data.id] = { id: res.data.id, name: v.name + '_gr', site: v.name, social: 'Google Reviews' };
-            if (!$rootScope.run_all_flag) {
-                // $rootScope.refreshFiles();
-                $rootScope.run_all_status = "Progress... 0.00%";
-                $rootScope.numJobs++;
-                $rootScope.numStop++;
+        if (!$rootScope.run_all_flag && v.gr == "") {
+            alert("Google Reviews link is not provided");
+        } else if (v.gr != "") {
+            var query = {
+                url : '/job_gr?v='+v.gr,
             }
 
-            stop[res.data.id] = $interval(updateJobs, 8000);
-        })
+            $scope.fetch_gr = true;
+            $rootScope.reviews = [];
+
+            request.query(query).then(function(res) {
+                jobs[res.data.id] = { id: res.data.id, name: v.name + '_gr', site: v.name, social: 'Google Reviews' };
+                if (!$rootScope.run_all_flag) {
+                    // $rootScope.refreshFiles();
+                    $rootScope.run_all_status = "Progress... 0.00%";
+                    $rootScope.numJobs++;
+                    $rootScope.numStop++;
+                }
+
+                stop[res.data.id] = $interval(updateJobs, 8000);
+            })
+        } else {
+            $rootScope.numStop--;
+            listOfSitesWithNoLink.push(v.name + " (Google Reviews)");
+        }
     }
 }
 
@@ -259,10 +294,10 @@ $scope.show_tp = function(name) {
         url : '/get_tp_reviews?name='+name
     }
 
-    $scope.show_reviews = "Trustpilot Reviews";
+    $rootScope.show_reviews = "Trustpilot Reviews";
 
     request.query(query).then(function(res) {
-        $scope.reviews = res.data.reviews;
+        $rootScope.reviews = res.data.reviews;
     });
 }
 
@@ -271,10 +306,10 @@ $scope.show_fb = function(name) {
         url : '/get_fb_reviews?name='+name
     }
 
-    $scope.show_reviews = "Facebook Reviews";
+    $rootScope.show_reviews = "Facebook Reviews";
 
     request.query(query).then(function(res) {
-        $scope.reviews = res.data.reviews;
+        $rootScope.reviews = res.data.reviews;
     });
 }
 
@@ -283,10 +318,10 @@ $scope.show_gr = function(name) {
         url : '/get_gr_reviews?name='+name
     }
 
-    $scope.show_reviews = "Google Reviews";
+    $rootScope.show_reviews = "Google Reviews";
 
     request.query(query).then(function(res) {
-        $scope.reviews = res.data.reviews;
+        $rootScope.reviews = res.data.reviews;
     });
 }
 
