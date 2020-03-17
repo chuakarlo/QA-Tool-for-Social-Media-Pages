@@ -11,6 +11,8 @@ var listOfSitesWithNoLink = [];
 $rootScope.numJobs = 0;
 $rootScope.numStop = 0;
 
+$rootScope.numSeq = 0;
+
 $scope.filename = $filter('date')(new Date(), 'yyyyMMddHHmm') + ".csv";
 $scope.getArray = [];
 $scope.separator = "|";
@@ -104,31 +106,47 @@ async function updateJobs() {
             url : '/job/'+id+'?name='+jobs[id].name,
         }
         request.query(query).then(function(res) {
-            if (!!jobs[id]) {
-                if (res.data.reviews !== null || res.status != 200) {
-                    $interval.cancel(stop[id]);
+            if (res.data.reviews !== null || res.status != 200) {
+                $interval.cancel(stop[id]);
 
-                    if (res.status != 200) {
-                        sites_not_run.push(jobs[id].site + " (" + jobs[id].social + ")");
-                    }
+                if (res.status != 200) {
+                    sites_not_run.push(jobs[id].site + " (" + jobs[id].social + ")");
+                }
+                
+                delete stop[id];
+                delete jobs[id];
+
+                $rootScope.numStop--;
+
+                // if ($rootScope.menu_next < $rootScope.menu_to_run.length && Object.keys(jobs).length == 1) {
+                //     var menu = $rootScope.menu_to_run[$rootScope.menu_next];
+                //     $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 2000)
+        
+                //     $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
                     
-                    delete stop[id];
-                    delete jobs[id];
+                //     $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 6000)
 
-                    $rootScope.numStop--;
+                //     $rootScope.menu_next++;
+                // }
 
-                    if ($rootScope.menu_next < $rootScope.menu_to_run.length && Object.keys(jobs).length == 1) {
-                        var menu = $rootScope.menu_to_run[$rootScope.menu_next];
-                        $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 2000)
-            
+                if ($rootScope.menu_next < $rootScope.menu_to_run.length) {
+                    var menu = $rootScope.menu_to_run[$rootScope.menu_next];
+
+                    if ($rootScope.numSeq == 1) {
+                        $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 4000)
+                    } else if ($rootScope.numSeq == 2) {
                         $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
-                        
-                        $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 6000)
+                    } else if ($rootScope.numSeq == 3) {
+                        $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 4000)
 
                         $rootScope.menu_next++;
+                        $rootScope.numSeq = 0;
                     }
+
+                    $rootScope.numSeq++;
                 }
             }
+
             if ($rootScope.numStop == 0) {
                 $rootScope.menu_next = 0;
                 $scope.fetch_tp = false;
@@ -177,13 +195,13 @@ $scope.run_all = function() {
 
     $rootScope.refreshFiles();
 
-    $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 2000)
-        
-    $timeout(function() {$rootScope.get_fb($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_fb");}, 4000)
+    $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 4000)
+    $rootScope.numSeq = 2;
+    // $timeout(function() {$rootScope.get_fb($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_fb");}, 4000)
     
-    $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 6000)
+    // $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 6000)
 
-    $rootScope.menu_next = 1;
+    // $rootScope.menu_next = 1;
 
     $rootScope.numJobs = $rootScope.menu_to_run.length * 3;
     $rootScope.numStop = $rootScope.menu_to_run.length * 3;
@@ -374,16 +392,16 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
             }
         });
 
-        $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 2000)
+        $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 4000)
+        $rootScope.numSeq = 2;
+        // $timeout(function() {$rootScope.get_fb($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_fb");}, 4000)
         
-        $timeout(function() {$rootScope.get_fb($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_fb");}, 4000)
-        
-        $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 6000)
+        // $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 6000)
 
         $rootScope.numJobs = $rootScope.menu_to_run.length * 3;
         $rootScope.numStop = $rootScope.menu_to_run.length * 3;
 
-        $rootScope.menu_next = 1;
+        // $rootScope.menu_next = 1;
     }
 
     $scope.cancel = function($event){

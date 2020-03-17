@@ -18,8 +18,9 @@ app.use(function(req, res, next) {
 
 const port = process.env.PORT || 3000;
 
-let REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
-// let REDIS_URL = process.env.REDIS_URL || 'redis-19222.c80.us-east-1-2.ec2.cloud.redislabs.com:19222';
+let REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379/0";
+// let REDIS_URL = process.env.REDIS_URL || "user:AxFrUWTjCgU3RqgkaNxfeiwYsNb3E8TP@SG-qatoolserver-32041.servers.mongodirector.com:6379";
+// let REDIS_URL = process.env.REDIS_URL || "redis-19222.c80.us-east-1-2.ec2.cloud.redislabs.com:19222";
 
 let workQueue = new Queue('work', REDIS_URL);
 
