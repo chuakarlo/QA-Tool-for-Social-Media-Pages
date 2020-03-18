@@ -110,7 +110,6 @@ async function updateJobs() {
                 $interval.cancel(stop[id]);
 
                 if (res.data.status == 404) {
-                    console.log("wala ko mudagan");
                     sites_not_run.push(jobs[id].site + " (" + jobs[id].social + ")");
                 }
                 
@@ -158,15 +157,12 @@ function menu_to_run() {
 }
 
 function checkIfStop() {
-    if ($rootScope.numStop == 0) {
-        $rootScope.menu_next = 0;
+    if ($rootScope.numStop <= 0) {
+        $rootScope.run_all_status = "Run All Completed";
+        console.log("Run All Completed");
         $scope.fetch_tp = false;
         $scope.fetch_fb = false;
         $scope.fetch_gr = false;
-        $rootScope.run_all_status = "Run All Completed";
-        console.log("Run All Completed");
-        $rootScope.run_all_flag = false;
-        populateCsv();
 
         if (sites_not_run.length > 0) {
             var sites_text = sites_not_run[0];
@@ -175,8 +171,8 @@ function checkIfStop() {
                 sites_text += "\n" + sites_not_run[i];
             }
 
-            // alert("Sites not run:\n\n" + sites_text);
-            console.log("Sites not run:\n\n" + sites_text);
+            alert("Sites not run:\n\n" + sites_text);
+            // console.log("Sites not run:\n\n" + sites_text);
 
             sites_not_run = [];
         }
@@ -188,11 +184,14 @@ function checkIfStop() {
                 sites_text += "\n" + listOfSitesWithNoLink[i];
             }
 
-            // alert("Sites with no links:\n\n" + sites_text);
-            console.log("Sites with no links:\n\n" + sites_text);
+            alert("Sites with no links:\n\n" + sites_text);
+            // console.log("Sites with no links:\n\n" + sites_text);
 
             listOfSitesWithNoLink = [];
         }
+
+        populateCsv();
+        $rootScope.run_all_flag = false;
     } else {
         console.log("Progress... "+(($rootScope.numJobs-$rootScope.numStop)/$rootScope.numJobs*100).toFixed(2)+"%");
         $rootScope.run_all_status = "Progress... "+(($rootScope.numJobs-$rootScope.numStop)/$rootScope.numJobs*100).toFixed(2)+"%";
