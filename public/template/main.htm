@@ -47,10 +47,10 @@
           </thead>
           <tbody>
             <tr ng-repeat="d in reviews | orderBy: '-date'">
-              <td width="20%">{{(d.date) | date: "MMM dd yyyy" : 'MST'}}</td>
-              <td width="20%">{{d.account_name}}</td>
-              <td width="40%" class="text-justify">{{d.article}}</td>
-              <td width="10%" class="text-justify">{{d.replies}}</td>
+              <td width="10%">{{(d.date) | date: "MMM dd yyyy" : 'MST'}}</td>
+              <td width="16%">{{d.account_name}}</td>
+              <td width="32%" class="text-justify">{{d.article}}</td>
+              <td width="32%" class="text-justify">{{d.replies}}</td>
               <td width="10%"><a target="_blank" href="{{d.url}}">{{d.url}}</a></td>
             </tr>
             <tr ng-if="reviews.length == 0">

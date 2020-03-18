@@ -51,8 +51,9 @@ const tr = require('timeago-reverse');
 async function main_tp(url) {
   console.log("Fetching: " + url)
   var data = [];
+  var browser;
   try {
-      const browser = await puppeteer.launch({
+      browser = await puppeteer.launch({
         headless : true,
         args: [
           '--no-sandbox',
@@ -134,19 +135,21 @@ async function main_tp(url) {
           break;
         }
       }
+      await browser.close();
       return data;
-      await browser.close();      
   }
   catch (e){
+    await browser.close();
     console.log('error ', e);
   }
 }
 
 async function main_gr(url) {
   console.log("Fetching: " + url)
-  var data = [];  
+  var data = [];
+  var browser;
   try {
-    const browser = await puppeteer.launch({
+    browser = await puppeteer.launch({
         headless : true,
         args: [
           '--no-sandbox',
@@ -237,10 +240,11 @@ async function main_gr(url) {
         article : p_text
       });     
     }
+    await browser.close();
     return data;
-    await browser.close();      
   }
   catch (e){
+    await browser.close();
     console.log('error ', e);
   }
 }
@@ -248,8 +252,9 @@ async function main_gr(url) {
 async function main_fb(url) {
   console.log("Fetching: " + url)
   var data = [];
+  var browser;
   try {
-    const browser = await puppeteer.launch({
+    browser = await puppeteer.launch({
         headless : true,
         args: [
           '--no-sandbox',
@@ -341,10 +346,11 @@ async function main_fb(url) {
         
       });     
     }
+    await browser.close();
     return data;
-    await browser.close();        
   }
   catch (e){
+    await browser.close();
     console.log('error ', e);
   }
 }

@@ -93,7 +93,9 @@ app.post("/job/:id", async(req, res) => {
 	let job = await workQueue.getJob(id);
 
 	if (job === null) {
-		res.status(404).end();
+		console.log('error '+name);
+		res.json({status: 404});
+		// res.status(404).end();
 	} else {
 		let state = await job.getState();
 		let progress = job._progress;
@@ -111,7 +113,7 @@ app.post("/job/:id", async(req, res) => {
 				const writeFile = util.promisify(fs.writeFile);
 
 				writeFile('public/reviews/'+name+'.json', JSON.stringify(reviews, null, 2))
-				.then(() => {console.log('success');})
+				.then(() => {console.log('success '+name);})
 				.catch(error => console.log(error));
 			});
 		}
@@ -184,7 +186,7 @@ app.post("/add_site_details", function(req, res) {
 	    sites.push(site);
 
 		writeFile('public/sites.json', JSON.stringify(sites, null, 2))
-		.then(() => {console.log('success'); res.send('success');})
+		.then(() => {console.log('success add_site_details'); res.send('success');})
 		.catch(error => console.log(error));
 	});
 });
@@ -213,7 +215,7 @@ app.post("/edit_site_details", function(req, res) {
 	    }
 
 	    writeFile('public/sites.json', JSON.stringify(sites, null, 2))
-		.then(() => {console.log('success'); res.send('success');})
+		.then(() => {console.log('success edit_site_details'); res.send('success');})
 		.catch(error => console.log(error));
 	});
 });
@@ -236,7 +238,7 @@ app.post("/delete_site_details", function(req, res) {
 	    }
 
 	    writeFile('public/sites.json', JSON.stringify(sites, null, 2))
-		.then(() => {console.log('success'); res.send('success');})
+		.then(() => {console.log('success delete_site_details'); res.send('success');})
 		.catch(error => console.log(error));
 	});
 });
