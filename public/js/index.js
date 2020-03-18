@@ -146,11 +146,11 @@ function menu_to_run() {
 
     if ($rootScope.menu_next < $rootScope.menu_to_run.length && Object.keys(jobs).length == 1) {
         var menu = $rootScope.menu_to_run[$rootScope.menu_next];
-        $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 2000)
+        $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 2000)
 
         $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
         
-        $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 6000)
+        $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 6000)
 
         $rootScope.menu_next++;
     }
@@ -205,11 +205,11 @@ $scope.run_all = function() {
 
     $rootScope.refreshFiles();
 
-    $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 2000)
+    $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 2000)
     // $rootScope.numSeq = 2;
     $timeout(function() {$rootScope.get_fb($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_fb");}, 4000)
-    
-    $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 6000)
+
+    $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 6000)
 
     $rootScope.menu_next = 1;
 
@@ -411,11 +411,11 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
             }
         });
 
-        $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 2000)
+        $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 2000)        
         // $rootScope.numSeq = 2;
         $timeout(function() {$rootScope.get_fb($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_fb");}, 4000)
         
-        $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 6000)
+        $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 6000)
 
         $rootScope.numJobs = $rootScope.menu_to_run.length * 3;
         $rootScope.numStop = $rootScope.menu_to_run.length * 3;
