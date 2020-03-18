@@ -48,8 +48,8 @@ function populateCsv() {
         tp_get.success(function(data) {
             if (data) {
                 data.forEach(function(d) {
-                    var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-                    var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+                    var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+                    var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
                     $scope.getArray.push({a: v.name, b: "Trustpilot", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
                 });
             }
@@ -62,8 +62,8 @@ function populateCsv() {
         fb_get.success(function(data) {
             if (data) {
                 data.forEach(function(d) {
-                    var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-                    var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+                    var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+                    var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
                     $scope.getArray.push({a: v.name, b: "Facebook", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
                 });
             }
@@ -76,8 +76,8 @@ function populateCsv() {
         gr_get.success(function(data) {
             if (data) {
                 data.forEach(function(d) {
-                    var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-                    var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+                    var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+                    var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
                     $scope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
                 });
             }
@@ -129,62 +129,70 @@ async function updateJobs() {
                 //     $rootScope.menu_next++;
                 // }
 
-                if ($rootScope.menu_next < $rootScope.menu_to_run.length) {
-                    var menu = $rootScope.menu_to_run[$rootScope.menu_next];
-
-                    if ($rootScope.numSeq == 1) {
-                        $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 4000)
-                    } else if ($rootScope.numSeq == 2) {
-                        $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
-                    } else if ($rootScope.numSeq == 3) {
-                        $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 4000)
-
-                        $rootScope.menu_next++;
-                        $rootScope.numSeq = 0;
-                    }
-
-                    $rootScope.numSeq++;
-                }
+                menu_to_run();
             }
 
-            if ($rootScope.numStop == 0) {
-                $rootScope.menu_next = 0;
-                $scope.fetch_tp = false;
-                $scope.fetch_fb = false;
-                $scope.fetch_gr = false;
-                $rootScope.run_all_status = "Run All Completed";
-                console.log("Run All Completed");
-                $rootScope.run_all_flag = false;
-                populateCsv();
-
-                if (sites_not_run.length > 0) {
-                    var sites_text = sites_not_run[0];
-
-                    for (let i = 1; i < sites_not_run.length; i++) {
-                        sites_text += "\n" + sites_not_run[i];
-                    }
-
-                    alert("Sites not run:\n\n" + sites_text);
-
-                    sites_not_run = [];
-                }
-
-                if (listOfSitesWithNoLink.length > 0) {
-                    var sites_text = listOfSitesWithNoLink[0];
-
-                    for (let i = 1; i < listOfSitesWithNoLink.length; i++) {
-                        sites_text += "\n" + listOfSitesWithNoLink[i];
-                    }
-
-                    alert("Sites with no links:\n\n" + sites_text);
-
-                    listOfSitesWithNoLink = [];
-                }
-            } else {
-                console.log("Progress... "+(($rootScope.numJobs-$rootScope.numStop)/$rootScope.numJobs*100).toFixed(2)+"%");
-                $rootScope.run_all_status = "Progress... "+(($rootScope.numJobs-$rootScope.numStop)/$rootScope.numJobs*100).toFixed(2)+"%";
-            }
+            checkIfStop();
         });
+    }
+}
+
+function menu_to_run() {
+    if ($rootScope.menu_next < $rootScope.menu_to_run.length && $rootScope.run_all_flag) {
+        var menu = $rootScope.menu_to_run[$rootScope.menu_next];
+
+        if ($rootScope.numSeq == 1) {
+            $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 4000)
+        } else if ($rootScope.numSeq == 2) {
+            $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
+        } else if ($rootScope.numSeq == 3) {
+            $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 4000)
+
+            $rootScope.menu_next++;
+            $rootScope.numSeq = 0;
+        }
+
+        $rootScope.numSeq++;
+    }
+}
+
+function checkIfStop() {
+    if ($rootScope.numStop == 0) {
+        $rootScope.menu_next = 0;
+        $scope.fetch_tp = false;
+        $scope.fetch_fb = false;
+        $scope.fetch_gr = false;
+        $rootScope.run_all_status = "Run All Completed";
+        console.log("Run All Completed");
+        $rootScope.run_all_flag = false;
+        populateCsv();
+
+        if (sites_not_run.length > 0) {
+            var sites_text = sites_not_run[0];
+
+            for (let i = 1; i < sites_not_run.length; i++) {
+                sites_text += "\n" + sites_not_run[i];
+            }
+
+            alert("Sites not run:\n\n" + sites_text);
+
+            sites_not_run = [];
+        }
+
+        if (listOfSitesWithNoLink.length > 0) {
+            var sites_text = listOfSitesWithNoLink[0];
+
+            for (let i = 1; i < listOfSitesWithNoLink.length; i++) {
+                sites_text += "\n" + listOfSitesWithNoLink[i];
+            }
+
+            alert("Sites with no links:\n\n" + sites_text);
+
+            listOfSitesWithNoLink = [];
+        }
+    } else {
+        console.log("Progress... "+(($rootScope.numJobs-$rootScope.numStop)/$rootScope.numJobs*100).toFixed(2)+"%");
+        $rootScope.run_all_status = "Progress... "+(($rootScope.numJobs-$rootScope.numStop)/$rootScope.numJobs*100).toFixed(2)+"%";
     }
 }
 
@@ -238,11 +246,14 @@ $rootScope.get_tp = function(v) {
                     $rootScope.numStop++;
                 }
 
-                stop[res.data.id] = $interval(updateJobs, 8000);
+                stop[res.data.id] = $interval(updateJobs, 10000);
             })
         } else {
             $rootScope.numStop--;
             listOfSitesWithNoLink.push(v.name + " (Trustpilot)");
+
+            menu_to_run();
+            checkIfStop();
         }
     }
 }
@@ -268,11 +279,14 @@ $rootScope.get_fb = function(v) {
                     $rootScope.numStop++;
                 }
 
-                stop[res.data.id] = $interval(updateJobs, 8000);
+                stop[res.data.id] = $interval(updateJobs, 10000);
             })
         } else {
             $rootScope.numStop--;
             listOfSitesWithNoLink.push(v.name + " (Facebook)");
+
+            menu_to_run();
+            checkIfStop();
         }
     }
 }
@@ -282,6 +296,7 @@ $rootScope.get_gr = function(v) {
         if (!$rootScope.run_all_flag && v.gr == "") {
             alert("Google Reviews link is not provided");
         } else if (v.gr != "") {
+            console.log("hehe");
             var query = {
                 url : '/job_gr?v='+v.gr,
             }
@@ -298,11 +313,14 @@ $rootScope.get_gr = function(v) {
                     $rootScope.numStop++;
                 }
 
-                stop[res.data.id] = $interval(updateJobs, 8000);
+                stop[res.data.id] = $interval(updateJobs, 10000);
             })
         } else {
             $rootScope.numStop--;
             listOfSitesWithNoLink.push(v.name + " (Google Reviews)");
+
+            menu_to_run();
+            checkIfStop();
         }
     }
 }

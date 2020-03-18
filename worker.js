@@ -11,6 +11,7 @@ let maxJobsPerWorker = 50;
 let workQueue = new Queue('work', REDIS_URL);
 
 function start() {
+  console.log(" [200] " + "Worker Status - running at port 6379");
   workQueue.process(maxJobsPerWorker, async (job) => {
     cleanQueue();
     console.log("I am a worker :)");
