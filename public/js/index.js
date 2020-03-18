@@ -127,33 +127,33 @@ async function updateJobs() {
 }
 
 function menu_to_run() {
-    // if ($rootScope.menu_next < $rootScope.menu_to_run.length && $rootScope.run_all_flag) {
-    //     var menu = $rootScope.menu_to_run[$rootScope.menu_next];
-
-    //     if ($rootScope.numSeq == 1) {
-    //         $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 4000)
-    //     } else if ($rootScope.numSeq == 2) {
-    //         $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
-    //     } else if ($rootScope.numSeq == 3) {
-    //         $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 4000)
-
-    //         $rootScope.menu_next++;
-    //         $rootScope.numSeq = 0;
-    //     }
-
-    //     $rootScope.numSeq++;
-    // }
-
-    if ($rootScope.menu_next < $rootScope.menu_to_run.length && Object.keys(jobs).length == 1) {
+    if ($rootScope.menu_next < $rootScope.menu_to_run.length && $rootScope.run_all_flag) {
         var menu = $rootScope.menu_to_run[$rootScope.menu_next];
-        $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 2000)
 
-        $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
-        
-        $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 6000)
+        if ($rootScope.numSeq == 1) {
+            $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 4000)
+        } else if ($rootScope.numSeq == 2) {
+            $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
+        } else if ($rootScope.numSeq == 3) {
+            $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 4000)
 
-        $rootScope.menu_next++;
+            $rootScope.menu_next++;
+            $rootScope.numSeq = 0;
+        }
+
+        $rootScope.numSeq++;
     }
+
+    // if ($rootScope.menu_next < $rootScope.menu_to_run.length && Object.keys(jobs).length == 1) {
+    //     var menu = $rootScope.menu_to_run[$rootScope.menu_next];
+    //     $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 2000)
+
+    //     $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
+        
+    //     $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 6000)
+
+    //     $rootScope.menu_next++;
+    // }
 }
 
 function checkIfStop() {
@@ -192,6 +192,7 @@ function checkIfStop() {
 
         populateCsv();
         $rootScope.run_all_flag = false;
+        $rootScope.menu_next = 0;
     } else {
         console.log("Progress... "+(($rootScope.numJobs-$rootScope.numStop)/$rootScope.numJobs*100).toFixed(2)+"%");
         $rootScope.run_all_status = "Progress... "+(($rootScope.numJobs-$rootScope.numStop)/$rootScope.numJobs*100).toFixed(2)+"%";
@@ -206,12 +207,12 @@ $scope.run_all = function() {
     $rootScope.refreshFiles();
 
     $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 2000)
-    // $rootScope.numSeq = 2;
-    $timeout(function() {$rootScope.get_fb($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_fb");}, 4000)
+    $rootScope.numSeq = 2;
+    // $timeout(function() {$rootScope.get_fb($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_fb");}, 4000)
 
-    $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 6000)
+    // $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 6000)
 
-    $rootScope.menu_next = 1;
+    // $rootScope.menu_next = 1;
 
     $rootScope.numJobs = $rootScope.menu_to_run.length * 3;
     $rootScope.numStop = $rootScope.menu_to_run.length * 3;
@@ -254,8 +255,8 @@ $rootScope.get_tp = function(v) {
             $rootScope.numStop--;
             listOfSitesWithNoLink.push(v.name + " (Trustpilot)");
 
-            // menu_to_run();
-            // checkIfStop();
+            menu_to_run();
+            checkIfStop();
         }
     }
 }
@@ -287,8 +288,8 @@ $rootScope.get_fb = function(v) {
             $rootScope.numStop--;
             listOfSitesWithNoLink.push(v.name + " (Facebook)");
 
-            // menu_to_run();
-            // checkIfStop();
+            menu_to_run();
+            checkIfStop();
         }
     }
 }
@@ -320,8 +321,8 @@ $rootScope.get_gr = function(v) {
             $rootScope.numStop--;
             listOfSitesWithNoLink.push(v.name + " (Google Reviews)");
 
-            // menu_to_run();
-            // checkIfStop();
+            menu_to_run();
+            checkIfStop();
         }
     }
 }
@@ -412,15 +413,15 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
         });
 
         $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 2000)        
-        // $rootScope.numSeq = 2;
-        $timeout(function() {$rootScope.get_fb($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_fb");}, 4000)
+        $rootScope.numSeq = 2;
+        // $timeout(function() {$rootScope.get_fb($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_fb");}, 4000)
         
-        $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 6000)
+        // $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 6000)
 
         $rootScope.numJobs = $rootScope.menu_to_run.length * 3;
         $rootScope.numStop = $rootScope.menu_to_run.length * 3;
 
-        $rootScope.menu_next = 1;
+        // $rootScope.menu_next = 1;
     }
 
     $scope.cancel = function($event){
