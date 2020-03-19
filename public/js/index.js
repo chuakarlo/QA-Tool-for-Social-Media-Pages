@@ -13,8 +13,8 @@ $rootScope.numStop = 0;
 
 $rootScope.numSeq = 0;
 
-$scope.filename = $filter('date')(new Date(), 'yyyyMMddHHmm') + ".csv";
-$scope.getArray = [];
+$rootScope.filename = "";
+$rootScope.getArray = [];
 $scope.separator = "|";
 
 $scope.getHeader = function () {return ["Site", "Social", "Date", "Acc name", "Review", "Reply", "review link"]};
@@ -22,7 +22,7 @@ $scope.getHeader = function () {return ["Site", "Social", "Date", "Acc name", "R
 if (dataSource) {
     dataSource.success(function(data) {
         $rootScope.menus = data;
-        populateCsv();
+        $rootScope.populateCsv();
     });
     dataSource.error(function(data) {
         alert("AJAX failed to load data.");
@@ -40,8 +40,9 @@ $scope.$on('$routeChangeStart', function(event,next,current) {
     $scope.url_ = data;
 })
 
-function populateCsv() {
-    $scope.getArray = [];
+$rootScope.populateCsv = function() {
+    $rootScope.getArray = [];
+    $rootScope.filename = $filter('date')(new Date(), 'yyyyMMddHHmm') + ".csv";
     $rootScope.menus.forEach(function(v) {
         var tp_get = $http.get('reviews/'+v.name+'_tp.json');
 
@@ -50,7 +51,7 @@ function populateCsv() {
                 data.forEach(function(d) {
                     var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
                     var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-                    $scope.getArray.push({a: v.name, b: "Trustpilot", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
+                    $rootScope.getArray.push({a: v.name, b: "Trustpilot", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
                 });
             }
         });
@@ -64,7 +65,7 @@ function populateCsv() {
                 data.forEach(function(d) {
                     var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
                     var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-                    $scope.getArray.push({a: v.name, b: "Facebook", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
+                    $rootScope.getArray.push({a: v.name, b: "Facebook", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
                 });
             }
         });
@@ -78,7 +79,7 @@ function populateCsv() {
                 data.forEach(function(d) {
                     var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
                     var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-                    $scope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
+                    $rootScope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
                 });
             }
         });
@@ -87,7 +88,7 @@ function populateCsv() {
         });
     });
 
-    if ($scope.getArray.length > 0) {
+    if ($rootScope.getArray.length > 0) {
         $scope.canExportFlag = true;
     } else {
         $scope.canExportFlag = false;
@@ -96,6 +97,7 @@ function populateCsv() {
 
 $scope.load_data = function(v) {
     $rootScope.reviews = [];
+    $rootScope.dateLastUpdated = null;
     $rootScope.show_reviews = "";
     $rootScope.selectedMenu = v;
 }
@@ -190,7 +192,7 @@ function checkIfStop() {
             listOfSitesWithNoLink = [];
         }
 
-        populateCsv();
+        $rootScope.populateCsv();
         $rootScope.run_all_flag = false;
         $rootScope.menu_next = 0;
     } else {
@@ -239,6 +241,7 @@ $rootScope.get_tp = function(v) {
 
             $scope.fetch_tp = true;
             $rootScope.reviews = [];
+            $rootScope.dateLastUpdated = null;
 
             request.query(query).then(function(res) {
                 jobs[res.data.id] = { id: res.data.id, name: v.name + '_tp', site: v.name, social: 'Trustpilot' };
@@ -272,6 +275,7 @@ $rootScope.get_fb = function(v) {
 
             $scope.fetch_fb = true;
             $rootScope.reviews = [];
+            $rootScope.dateLastUpdated = null;
 
             request.query(query).then(function(res) {
                 jobs[res.data.id] = { id: res.data.id, name: v.name + '_fb', site: v.name, social: 'Facebook' };
@@ -305,6 +309,7 @@ $rootScope.get_gr = function(v) {
 
             $scope.fetch_gr = true;
             $rootScope.reviews = [];
+            $rootScope.dateLastUpdated = null;
 
             request.query(query).then(function(res) {
                 jobs[res.data.id] = { id: res.data.id, name: v.name + '_gr', site: v.name, social: 'Google Reviews' };
@@ -335,6 +340,11 @@ $scope.show_tp = function(name) {
     $rootScope.show_reviews = "Trustpilot Reviews";
 
     request.query(query).then(function(res) {
+        if (res.data.date.length > 0 && res.data.reviews.length > 0) {
+            $rootScope.dateLastUpdated = new Date(res.data.date[0].date);
+        } else {
+            $rootScope.dateLastUpdated = null;
+        }
         $rootScope.reviews = res.data.reviews;
     });
 }
@@ -347,6 +357,11 @@ $scope.show_fb = function(name) {
     $rootScope.show_reviews = "Facebook Reviews";
 
     request.query(query).then(function(res) {
+        if (res.data.date.length > 0 && res.data.reviews.length > 0) {
+            $rootScope.dateLastUpdated = new Date(res.data.date[0].date);
+        } else {
+            $rootScope.dateLastUpdated = null;
+        }
         $rootScope.reviews = res.data.reviews;
     });
 }
@@ -359,6 +374,11 @@ $scope.show_gr = function(name) {
     $rootScope.show_reviews = "Google Reviews";
 
     request.query(query).then(function(res) {
+        if (res.data.date.length > 0 && res.data.reviews.length > 0) {
+            $rootScope.dateLastUpdated = new Date(res.data.date[0].date);
+        } else {
+            $rootScope.dateLastUpdated = null;
+        }
         $rootScope.reviews = res.data.reviews;
     });
 }

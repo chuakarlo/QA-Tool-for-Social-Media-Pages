@@ -102,8 +102,12 @@ app.post("/job/:id", async(req, res) => {
 		let reason = job.failedReason;
 		let reviews = null;
 		if (job.returnvalue !== null) {
-			reviews = job.returnvalue.reviews;
-			if (reviews === undefined) reviews = [];
+			if (job.returnvalue.reviews === undefined) {
+				reviews = [];
+			} else {
+				reviews = [{date: new Date().toString()}];
+				reviews = reviews.concat(job.returnvalue.reviews);
+			}
 
 			fs.readFile('public/reviews/'+name+'.json', (err, data) => {
 				if (err) {
@@ -127,13 +131,16 @@ app.post("/get_tp_reviews", function(req, res) {
 
 	fs.readFile('public/reviews/'+name+'_tp.json', (err, data) => {
 		var reviews;
+		var date;
 		if (err) {
+			date = [];
 			reviews = [];
 		} else {
 			reviews = JSON.parse(data);
+			date = reviews.splice(0,1);
 		}
 
-		res.json({ reviews });
+		res.json({ reviews, date });
 	});
 });
 
@@ -142,13 +149,16 @@ app.post("/get_fb_reviews", function(req, res) {
 
 	fs.readFile('public/reviews/'+name+'_fb.json', (err, data) => {
 		var reviews;
+		var date;
 		if (err) {
+			date = [];
 			reviews = [];
 		} else {
 			reviews = JSON.parse(data);
+			date = reviews.splice(0,1);
 		}
 
-		res.json({ reviews });
+		res.json({ reviews, date });
 	});
 });
 
@@ -157,13 +167,16 @@ app.post("/get_gr_reviews", function(req, res) {
 
 	fs.readFile('public/reviews/'+name+'_gr.json', (err, data) => {
 		var reviews;
+		var date;
 		if (err) {
+			date = [];
 			reviews = [];
 		} else {
 			reviews = JSON.parse(data);
+			date = reviews.splice(0,1);
 		}
 
-		res.json({ reviews });
+		res.json({ reviews, date });
 	});
 });
 

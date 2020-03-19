@@ -33,7 +33,10 @@
   </div>
   <div class="row pad_" ng-if="show_reviews">
     <div class="col-md-12 card text-sm">  
-      <h6>{{show_reviews}} <span ng-if="reviews.length > 0"><mark>({{reviews.length}} reviews)</mark></span></h6>
+      <h6>
+        {{show_reviews}}
+        <span ng-if="reviews.length > 0"><mark>({{reviews.length}} reviews)</mark></span>
+        <span class="pull-right" ng-if="dateLastUpdated">Last Updated: {{dateLastUpdated | date: "MMM dd yyyy hh:mm:ss a"}}</span></h6>
       <div class="tableFixHead">
         <table class="table table-striped table-responsive text-sm">
           <thead>
