@@ -14,7 +14,7 @@ $rootScope.numStop = 0;
 $rootScope.numSeq = 0;
 
 $rootScope.filename = "";
-$rootScope.getArray = [];
+$rootScope.getArray;
 $scope.separator = "|";
 
 $scope.getHeader = function () {return ["Site", "Social", "Date", "Acc name", "Review", "Reply", "review link"]};
@@ -33,7 +33,6 @@ $scope.url_;
 $rootScope.run_all_flag;
 $rootScope.menu_to_run = [];
 $rootScope.menu_next = 0;
-$scope.canExportFlag;
 
 $scope.$on('$routeChangeStart', function(event,next,current) { 
     var data = next.$$route.originalPath;
@@ -73,7 +72,39 @@ $rootScope.populateCsv = function() {
             
         });
 
+        // $http({method: 'GET', url: '/reviews/'+v.name+'_gr.json'})
+        // $http.get('/reviews/'+v.name+'_gr.json')
+        //     .success(function (data) {
+        //         console.log(data);
+        //         var data = data.data;
+        //         if (data) {
+        //             data.forEach(function(d) {
+        //                 var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+        //                 var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+        //                 $rootScope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
+        //             });
+        //         }
+        //     }).error(function (error) {
+        //         console.log("haha");
+        //     });
+
+
         var gr_get = $http.get('/reviews/'+v.name+'_gr.json');
+        //     .then(function (data) {
+        //         console.log(data);
+        //         var data = data.data;
+        //         if (data) {
+        //             data.forEach(function(d) {
+        //                 var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+        //                 var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+        //                 $rootScope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
+        //             });
+        //         }
+        //     })
+        //     .catch(function (error) {
+        //         console.log("haha");
+        //     });
+
         gr_get.success(function(data) {
             if (data) {
                 data.forEach(function(d) {
@@ -87,12 +118,6 @@ $rootScope.populateCsv = function() {
             
         });
     });
-
-    if ($rootScope.getArray.length > 0) {
-        $scope.canExportFlag = true;
-    } else {
-        $scope.canExportFlag = false;
-    }
 }
 
 $scope.load_data = function(v) {
