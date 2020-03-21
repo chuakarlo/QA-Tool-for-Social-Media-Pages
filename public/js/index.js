@@ -43,80 +43,42 @@ $rootScope.populateCsv = function() {
     $rootScope.getArray = [];
     $rootScope.filename = $filter('date')(new Date(), 'yyyyMMddHHmm') + ".csv";
     $rootScope.menus.forEach(function(v) {
-        var tp_get = $http.get('reviews/'+v.name+'_tp.json');
+        $http.get('reviews/'+v.name+'_tp.json')
+            .success(function(data) {
+                data.splice(0,1);
+                if (data) {
+                    data.forEach(function(d) {
+                        var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+                        var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+                        $rootScope.getArray.push({a: v.name, b: "Trustpilot", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
+                    });
+                }
+            });
 
-        tp_get.success(function(data) {
-            if (data) {
-                data.forEach(function(d) {
-                    var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-                    var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-                    $rootScope.getArray.push({a: v.name, b: "Trustpilot", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
-                });
-            }
-        });
-        tp_get.error(function(error) {
-            
-        });
-
-        var fb_get = $http.get('reviews/'+v.name+'_fb.json');
-        fb_get.success(function(data) {
-            if (data) {
-                data.forEach(function(d) {
-                    var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-                    var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-                    $rootScope.getArray.push({a: v.name, b: "Facebook", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
-                });
-            }
-        });
-        fb_get.error(function(error) {
-            
-        });
-
-        // $http({method: 'GET', url: '/reviews/'+v.name+'_gr.json'})
-        // $http.get('/reviews/'+v.name+'_gr.json')
-        //     .success(function (data) {
-        //         console.log(data);
-        //         var data = data.data;
-        //         if (data) {
-        //             data.forEach(function(d) {
-        //                 var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-        //                 var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-        //                 $rootScope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
-        //             });
-        //         }
-        //     }).error(function (error) {
-        //         console.log("haha");
-        //     });
+        $http.get('reviews/'+v.name+'_fb.json')
+            .success(function(data) {
+                data.splice(0,1);
+                if (data) {
+                    data.forEach(function(d) {
+                        var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+                        var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+                        $rootScope.getArray.push({a: v.name, b: "Facebook", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
+                    });
+                }
+            });
 
 
-        var gr_get = $http.get('/reviews/'+v.name+'_gr.json');
-        //     .then(function (data) {
-        //         console.log(data);
-        //         var data = data.data;
-        //         if (data) {
-        //             data.forEach(function(d) {
-        //                 var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-        //                 var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-        //                 $rootScope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
-        //             });
-        //         }
-        //     })
-        //     .catch(function (error) {
-        //         console.log("haha");
-        //     });
-
-        gr_get.success(function(data) {
-            if (data) {
-                data.forEach(function(d) {
-                    var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-                    var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-                    $rootScope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
-                });
-            }
-        });
-        gr_get.error(function(error) {
-            
-        });
+        $http.get('/reviews/'+v.name+'_gr.json')
+            .success(function(data) {
+                data.splice(0,1);
+                if (data) {
+                    data.forEach(function(d) {
+                        var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+                        var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+                        $rootScope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
+                    });
+                }
+            });
     });
 }
 
@@ -136,14 +98,93 @@ async function updateJobs() {
             if (res.data.reviews !== null || res.data.status == 404) {
                 $interval.cancel(stop[id]);
 
-                if (res.data.status == 404) {
-                    sites_not_run.push(jobs[id].site + " (" + jobs[id].social + ")");
-                }
-                
-                delete stop[id];
-                delete jobs[id];
+            //     let findDuplicates = arr => arr.filter((item, index) => {
+            //         // console.log(JSON.stringify(arr[arr.indexOf(item)]));
+            //         // console.log(JSON.stringify(item));
+            //         console.log(arr.indexOf(item));
+            //         console.log(index);
 
-                $rootScope.numStop--;
+            //         console.log(arr.indexOf(item) != index);
+
+            //         // console.log(arr[arr.indexOf(item)] != item);
+            // })
+
+            //     let findDuplicates = arr => arr.filter((item, index) => {
+            //         console.log(arr.indexOf(item));
+            //         console.log(index);
+            //         console.log(arr.indexOf(item) != index);
+            // })
+
+                // var nbOcc = function (needle, haystack) {
+                //     return haystack.filter(function (record) {
+                //         return JSON.stringify(needle) === JSON.stringify(record);
+                //     }).length;
+                // };
+
+                // let strArray = [ "q", "w", "w", "w", "e", "i", "u", "r"];
+
+                // let strArray = [
+                //   {
+                //     "date": 1582712634000,
+                //     "account_name": "Joseph Burroughs",
+                //     "url": "https://www.facebook.com/joseph.burroughs.315/posts/100808894863584",
+                //     "article": "The snuggle bear sleepsack I bought from Easy Life Helper is superb!!. Extremely soft, warm, and cozy that helps my daughter sleep. I Will be buying more products soon, they’re definitely worth the money!!",
+                //     "replies": ""
+                //   },
+                //   {
+                //     "date": 1582712634000,
+                //     "account_name": "Joseph Burroughs",
+                //     "url": "https://www.facebook.com/joseph.burroughs.315/posts/100808894863584",
+                //     "article": "The snuggle bear sleepsack I bought from Easy Life Helper is superb!!. Extremely soft, warm, and cozy that helps my daughter sleep. I Will be buying more products soon, they’re definitely worth the money!!",
+                //     "replies": ""
+                //   },
+                //   {
+                //     "date": 1581485301000,
+                //     "account_name": "Jennie Richmond",
+                //     "url": "https://www.facebook.com/jennie.richmond.794/posts/105502074366220",
+                //     "article": "The Robo-Pal baby walker is one of the most adorable and top-notch quality walkers I've bought. I just loved the fantastic craftsmanship, alluring and non-allergic paint colors. The product keeps my baby engaged and entertained. I utilized each penny invested in it.",
+                //     "replies": ""
+                //   }
+                // ];
+
+                // var seenUrl = {};
+
+                // var arr = res.data.reviews.filter(function(currentObject) {
+                //     if (currentObject.url in seenUrl) {
+                //         return false;
+                //     } else {
+                //         seenUrl[currentObject.url] = true;
+                //         return true;
+                //     }
+                // });
+
+                // if (res.data.reviews.length != arr.length) {
+                //     console.log(res.data.reviews);
+                //     console.log(arr);
+                //     console.log(res.data.reviews.length);
+                //     console.log(arr.length);
+                //     console.log("Duplicate: " + jobs[id].name);
+                //     if ($rootScope.numSeq == 1) {
+                //         if ($rootScope.menu_next > 0) {
+                //             $rootScope.numSeq = 3;
+                //             $rootScope.menu_next--;
+                //         } else {
+                //             $rootScope.numSeq = 0;
+                //         }
+                //     } else {
+                //         $rootScope.numSeq--;
+                    // }
+                // } else {
+
+                    if (res.data.status == 404) {
+                        sites_not_run.push(jobs[id].site + " (" + jobs[id].social + ")");
+                    }
+                    
+                    delete stop[id];
+                    delete jobs[id];
+
+                    $rootScope.numStop--;
+                // }
 
                 menu_to_run();
             }
@@ -157,7 +198,9 @@ function menu_to_run() {
     if ($rootScope.menu_next < $rootScope.menu_to_run.length && $rootScope.run_all_flag) {
         var menu = $rootScope.menu_to_run[$rootScope.menu_next];
 
-        if ($rootScope.numSeq == 1) {
+        if ($rootScope.numSeq == 0) {
+            $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 4000)
+        } else if ($rootScope.numSeq == 1) {
             $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 4000)
         } else if ($rootScope.numSeq == 2) {
             $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
@@ -457,7 +500,7 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
             }
         });
 
-        $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 2000)        
+        $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 2000)
         $rootScope.numSeq = 2;
         // $timeout(function() {$rootScope.get_fb($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_fb");}, 4000)
         
