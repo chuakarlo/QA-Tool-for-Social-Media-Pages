@@ -28,19 +28,16 @@ let workQueue = new Queue('work', REDIS_URL);
 
 /**/
 app.post("/job_tp", async(req, res) => {
-	// deleteFiles();
 	let job = await workQueue.add({ url: req.query.v, type: 'tp' });
 	res.json({ id: job.id });
 });
 
 app.post("/job_fb", async(req, res) => {
-	// deleteFiles();
 	let job = await workQueue.add({ url: req.query.v, type: 'fb' });
 	res.json({ id: job.id });
 });
 
 app.post("/job_gr", async(req, res) => {
-	// deleteFiles();
 	let job = await workQueue.add({ url: req.query.v, type: 'gr' });
 	res.json({ id: job.id });
 });
@@ -61,31 +58,9 @@ function deleteFiles() {
 	    fs.unlink(path.join(directory, file), err => {
 	      if (err) console.log(err);
 	    });
-	 //    const writeFile = util.promisify(fs.writeFile);
-
-		// writeFile(path.join(directory, file), "[]")
-		// .then(() => {console.log('success');})
-		// .catch(error => console.log(error));
 	  }
 	});
 }
-// app.post("/job/:id", async(req, res) => {
-// 	let id = req.params.id;
-// 	let job = await workQueue.getJob(id);
-
-// 	if (job === null) {
-// 		res.status(404).end();
-// 	} else {
-// 		let state = await job.getState();
-// 		let progress = job._progress;
-// 		let reason = job.failedReason;
-// 		let reviews = null;
-// 		if (job.returnvalue !== null) {
-// 			reviews = job.returnvalue.reviews;
-// 		}
-// 		res.json({ id, state, progress, reason, reviews });
-// 	}
-// });
 
 app.post("/job/:id", async(req, res) => {
 	let id = req.params.id;
@@ -95,7 +70,6 @@ app.post("/job/:id", async(req, res) => {
 	if (job === null) {
 		console.log('error '+name);
 		res.json({status: 404});
-		// res.status(404).end();
 	} else {
 		let state = await job.getState();
 		let progress = job._progress;

@@ -12,6 +12,7 @@ $rootScope.numJobs = 0;
 $rootScope.numStop = 0;
 
 $rootScope.numSeq = 0;
+$rootScope.run_twice_already = false;
 
 $rootScope.filename = "";
 $rootScope.getArray;
@@ -48,8 +49,8 @@ $rootScope.populateCsv = function() {
                 data.splice(0,1);
                 if (data) {
                     data.forEach(function(d) {
-                        var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-                        var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+                        var article =  (d.article) ? d.article.replace(/\n/g, " ") : "";
+                        var replies =  (d.replies) ? d.replies.replace(/\n/g, " ") : "";
                         $rootScope.getArray.push({a: v.name, b: "Trustpilot", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
                     });
                 }
@@ -60,8 +61,8 @@ $rootScope.populateCsv = function() {
                 data.splice(0,1);
                 if (data) {
                     data.forEach(function(d) {
-                        var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-                        var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+                        var article =  (d.article) ? d.article.replace(/\n/g, " ") : "";
+                        var replies =  (d.replies) ? d.replies.replace(/\n/g, " ") : "";
                         $rootScope.getArray.push({a: v.name, b: "Facebook", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
                     });
                 }
@@ -73,11 +74,12 @@ $rootScope.populateCsv = function() {
                 data.splice(0,1);
                 if (data) {
                     data.forEach(function(d) {
-                        var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
-                        var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"").replace(/—/g, "-") : "";
+                        var article =  (d.article) ? d.article.replace(/\n/g, " ") : "";
+                        var replies =  (d.replies) ? d.replies.replace(/\n/g, " ") : "";
                         $rootScope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
                     });
                 }
+
             });
     });
 }
@@ -98,93 +100,34 @@ async function updateJobs() {
             if (res.data.reviews !== null || res.data.status == 404) {
                 $interval.cancel(stop[id]);
 
-            //     let findDuplicates = arr => arr.filter((item, index) => {
-            //         // console.log(JSON.stringify(arr[arr.indexOf(item)]));
-            //         // console.log(JSON.stringify(item));
-            //         console.log(arr.indexOf(item));
-            //         console.log(index);
+                var hasDuplicate = false;
+                res.data.reviews.map(v => v.url).sort().sort((a, b) => {
+                  if (a === b) hasDuplicate = true
+                })
 
-            //         console.log(arr.indexOf(item) != index);
-
-            //         // console.log(arr[arr.indexOf(item)] != item);
-            // })
-
-            //     let findDuplicates = arr => arr.filter((item, index) => {
-            //         console.log(arr.indexOf(item));
-            //         console.log(index);
-            //         console.log(arr.indexOf(item) != index);
-            // })
-
-                // var nbOcc = function (needle, haystack) {
-                //     return haystack.filter(function (record) {
-                //         return JSON.stringify(needle) === JSON.stringify(record);
-                //     }).length;
-                // };
-
-                // let strArray = [ "q", "w", "w", "w", "e", "i", "u", "r"];
-
-                // let strArray = [
-                //   {
-                //     "date": 1582712634000,
-                //     "account_name": "Joseph Burroughs",
-                //     "url": "https://www.facebook.com/joseph.burroughs.315/posts/100808894863584",
-                //     "article": "The snuggle bear sleepsack I bought from Easy Life Helper is superb!!. Extremely soft, warm, and cozy that helps my daughter sleep. I Will be buying more products soon, they’re definitely worth the money!!",
-                //     "replies": ""
-                //   },
-                //   {
-                //     "date": 1582712634000,
-                //     "account_name": "Joseph Burroughs",
-                //     "url": "https://www.facebook.com/joseph.burroughs.315/posts/100808894863584",
-                //     "article": "The snuggle bear sleepsack I bought from Easy Life Helper is superb!!. Extremely soft, warm, and cozy that helps my daughter sleep. I Will be buying more products soon, they’re definitely worth the money!!",
-                //     "replies": ""
-                //   },
-                //   {
-                //     "date": 1581485301000,
-                //     "account_name": "Jennie Richmond",
-                //     "url": "https://www.facebook.com/jennie.richmond.794/posts/105502074366220",
-                //     "article": "The Robo-Pal baby walker is one of the most adorable and top-notch quality walkers I've bought. I just loved the fantastic craftsmanship, alluring and non-allergic paint colors. The product keeps my baby engaged and entertained. I utilized each penny invested in it.",
-                //     "replies": ""
-                //   }
-                // ];
-
-                // var seenUrl = {};
-
-                // var arr = res.data.reviews.filter(function(currentObject) {
-                //     if (currentObject.url in seenUrl) {
-                //         return false;
-                //     } else {
-                //         seenUrl[currentObject.url] = true;
-                //         return true;
-                //     }
-                // });
-
-                // if (res.data.reviews.length != arr.length) {
-                //     console.log(res.data.reviews);
-                //     console.log(arr);
-                //     console.log(res.data.reviews.length);
-                //     console.log(arr.length);
-                //     console.log("Duplicate: " + jobs[id].name);
-                //     if ($rootScope.numSeq == 1) {
-                //         if ($rootScope.menu_next > 0) {
-                //             $rootScope.numSeq = 3;
-                //             $rootScope.menu_next--;
-                //         } else {
-                //             $rootScope.numSeq = 0;
-                //         }
-                //     } else {
-                //         $rootScope.numSeq--;
-                    // }
-                // } else {
-
+                if (hasDuplicate || (res.data.reviews.length < 20 && !$rootScope.run_twice_already && $rootScope.run_all_flag)) {
+                    $rootScope.run_twice_already = true;
+                    if ($rootScope.numSeq == 1) {
+                        if ($rootScope.menu_next > 0) {
+                            $rootScope.numSeq = 3;
+                            $rootScope.menu_next--;
+                        } else {
+                            $rootScope.numSeq = 1;
+                        }
+                    } else {
+                        $rootScope.numSeq--;
+                    }
+                } else {
+                    $rootScope.run_twice_already = false;
                     if (res.data.status == 404) {
                         sites_not_run.push(jobs[id].site + " (" + jobs[id].social + ")");
                     }
-                    
-                    delete stop[id];
-                    delete jobs[id];
 
                     $rootScope.numStop--;
-                // }
+                }
+                
+                delete stop[id];
+                delete jobs[id];
 
                 menu_to_run();
             }
@@ -198,9 +141,7 @@ function menu_to_run() {
     if ($rootScope.menu_next < $rootScope.menu_to_run.length && $rootScope.run_all_flag) {
         var menu = $rootScope.menu_to_run[$rootScope.menu_next];
 
-        if ($rootScope.numSeq == 0) {
-            $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 4000)
-        } else if ($rootScope.numSeq == 1) {
+        if ($rootScope.numSeq == 1) {
             $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 4000)
         } else if ($rootScope.numSeq == 2) {
             $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
@@ -213,17 +154,6 @@ function menu_to_run() {
 
         $rootScope.numSeq++;
     }
-
-    // if ($rootScope.menu_next < $rootScope.menu_to_run.length && Object.keys(jobs).length == 1) {
-    //     var menu = $rootScope.menu_to_run[$rootScope.menu_next];
-    //     $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 2000)
-
-    //     $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
-        
-    //     $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 6000)
-
-    //     $rootScope.menu_next++;
-    // }
 }
 
 function checkIfStop() {
@@ -242,7 +172,6 @@ function checkIfStop() {
             }
 
             alert("Sites not run:\n\n" + sites_text);
-            // console.log("Sites not run:\n\n" + sites_text);
 
             sites_not_run = [];
         }
@@ -255,7 +184,6 @@ function checkIfStop() {
             }
 
             alert("Sites with no links:\n\n" + sites_text);
-            // console.log("Sites with no links:\n\n" + sites_text);
 
             listOfSitesWithNoLink = [];
         }
@@ -278,11 +206,6 @@ $scope.run_all = function() {
 
     $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 2000)
     $rootScope.numSeq = 2;
-    // $timeout(function() {$rootScope.get_fb($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_fb");}, 4000)
-
-    // $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 6000)
-
-    // $rootScope.menu_next = 1;
 
     $rootScope.numJobs = $rootScope.menu_to_run.length * 3;
     $rootScope.numStop = $rootScope.menu_to_run.length * 3;
@@ -314,7 +237,6 @@ $rootScope.get_tp = function(v) {
             request.query(query).then(function(res) {
                 jobs[res.data.id] = { id: res.data.id, name: v.name + '_tp', site: v.name, social: 'Trustpilot' };
                 if (!$rootScope.run_all_flag) {
-                    // $rootScope.refreshFiles();
                     $rootScope.run_all_status = "Progress... 0.00%";
                     $rootScope.numJobs++;
                     $rootScope.numStop++;
@@ -348,7 +270,6 @@ $rootScope.get_fb = function(v) {
             request.query(query).then(function(res) {
                 jobs[res.data.id] = { id: res.data.id, name: v.name + '_fb', site: v.name, social: 'Facebook' };
                 if (!$rootScope.run_all_flag) {
-                    // $rootScope.refreshFiles();
                     $rootScope.run_all_status = "Progress... 0.00%";
                     $rootScope.numJobs++;
                     $rootScope.numStop++;
@@ -382,7 +303,6 @@ $rootScope.get_gr = function(v) {
             request.query(query).then(function(res) {
                 jobs[res.data.id] = { id: res.data.id, name: v.name + '_gr', site: v.name, social: 'Google Reviews' };
                 if (!$rootScope.run_all_flag) {
-                    // $rootScope.refreshFiles();
                     $rootScope.run_all_status = "Progress... 0.00%";
                     $rootScope.numJobs++;
                     $rootScope.numStop++;
@@ -502,14 +422,9 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
 
         $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 2000)
         $rootScope.numSeq = 2;
-        // $timeout(function() {$rootScope.get_fb($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_fb");}, 4000)
         
-        // $timeout(function() {$rootScope.get_tp($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_tp");}, 6000)
-
         $rootScope.numJobs = $rootScope.menu_to_run.length * 3;
         $rootScope.numStop = $rootScope.menu_to_run.length * 3;
-
-        // $rootScope.menu_next = 1;
     }
 
     $scope.cancel = function($event){

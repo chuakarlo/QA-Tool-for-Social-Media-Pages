@@ -29,20 +29,12 @@ Navigation bar basics
 <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
   <button class="btn btn-primary" id="menu-toggle"><span class="fa fa-arrow-left"></span></button>
   <a class="navbar-brand" href="#">QAS Review Tool</a>
-  <sub class="text-white">v 0.8.0320</sub>
+  <sub class="text-white">v 0.8.0323</sub>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="collapsibleNavbar">
     <ul class="navbar-nav ml-auto">
-      <!--
-      <li class="nav-item">
-        <a class="nav-link" href="#"><img class="rounded" ng-src="{{user.pic}}" height="20"  />Hi {{user.first}}</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#" ng-click="sign_out()">Log Out</a>
-      </li> 
-      !-->  
     </ul>
   </div>
   <div class=" mr-2 py-1 px-3 border" ng-if="run_all_status">
@@ -56,7 +48,7 @@ Navigation bar basics
   </div>
   <div class="pr-2">
     <button class="btn btn-info"
-              ng-csv="getArray" csv-header="getHeader()" filename="{{ filename }}" field-separator="{{ separator }}">Export to CSV</button>
+              ng-csv="getArray" csv-header="getHeader()" filename="{{ filename }}" field-separator="{{ separator }}" charset="utf-8" add-bom="true">Export to CSV</button>
   </div>
   <div ng-app="notes" ng-controller="ModalCtrl">
     <button class="btn btn-warning" ng-click="open('add')"><span class="fa fa-plus"></span></button>
@@ -73,7 +65,6 @@ Container basics
 <!-- Sidebar -->
     <div class="bg-light border-right" id="sidebar-wrapper">
         <div ng-if="menus" class="list-group list-group-flush text-sm" ng-repeat="(k,v) in menus">
-          <!-- <a ng-class="{true: 'disabled', false: ''}[fetch_tp]" href="#/" ng-click="load_data(v)" class="list-group-item list-group-item-action bg-light">{{v.name}}</a> -->
           <a href="#/" ng-click="load_data(v)" class="list-group-item list-group-item-action bg-light">{{v.name}}</a>
       </div>
     </div>
