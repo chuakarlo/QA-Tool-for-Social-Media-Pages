@@ -49,8 +49,8 @@ $rootScope.populateCsv = function() {
                 data.splice(0,1);
                 if (data) {
                     data.forEach(function(d) {
-                        var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'") : "";
-                        var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'") : "";
+                        var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"") : "";
+                        var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"") : "";
                         $rootScope.getArray.push({a: v.name, b: "Trustpilot", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
                     });
                 }
@@ -61,8 +61,8 @@ $rootScope.populateCsv = function() {
                 data.splice(0,1);
                 if (data) {
                     data.forEach(function(d) {
-                        var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'") : "";
-                        var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'") : "";
+                        var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"") : "";
+                        var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"") : "";
                         $rootScope.getArray.push({a: v.name, b: "Facebook", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
                     });
                 }
@@ -74,8 +74,8 @@ $rootScope.populateCsv = function() {
                 data.splice(0,1);
                 if (data) {
                     data.forEach(function(d) {
-                        var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'") : "";
-                        var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'") : "";
+                        var article =  (d.article) ? d.article.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"") : "";
+                        var replies =  (d.replies) ? d.replies.replace(/\n/g, " ").replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, "\"").replace(/”/g, "\"") : "";
                         $rootScope.getArray.push({a: v.name, b: "Google Reviews", c: $filter('date')(d.date, 'MMM dd yyyy'), d: d.account_name, e: article, f: replies, g: d.url});
                     });
                 }
