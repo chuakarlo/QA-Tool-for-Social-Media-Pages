@@ -242,7 +242,7 @@ $rootScope.get_tp = function(v) {
                     $rootScope.numStop++;
                 }
 
-                stop[res.data.id] = $interval(updateJobs, 8000);
+                stop[res.data.id] = $interval(updateJobs, 24000);
             })
         } else {
             $rootScope.numStop--;
@@ -275,7 +275,7 @@ $rootScope.get_fb = function(v) {
                     $rootScope.numStop++;
                 }
 
-                stop[res.data.id] = $interval(updateJobs, 8000);
+                stop[res.data.id] = $interval(updateJobs, 24000);
             })
         } else {
             $rootScope.numStop--;
@@ -308,7 +308,7 @@ $rootScope.get_gr = function(v) {
                     $rootScope.numStop++;
                 }
 
-                stop[res.data.id] = $interval(updateJobs, 8000);
+                stop[res.data.id] = $interval(updateJobs, 24000);
             })
         } else {
             $rootScope.numStop--;
