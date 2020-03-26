@@ -165,11 +165,13 @@ async function main_gr(url) {
     await page.click('.jqnFjrOWMVU__button');
 
     await page.waitForNavigation({ waitUntil: 'networkidle0' });
+
+    await GRScroll(page);
     
-    for(i=0; i < 5; i++){
-      await page.evaluate(GRScroll);
-      await page.waitFor(2000)
-    }
+    // for(i=0; i < 6; i++){
+    //   await page.evaluate(GRScroll);
+    //   await page.waitFor(2000)
+    // }
         
     //checks for 'See more' button and clicks
     for(i=0; i < 1; i++){
@@ -285,8 +287,6 @@ async function main_fb(url) {
       }
     }, rem1);   
 
-
-
     for(i = 0; i < sections.length; i++){
       // get date
       const d = await page.$$eval(".fsm > ._5pcq > abbr", el => el.map(x => x.getAttribute("data-utime")));
@@ -372,16 +372,22 @@ async function autoScroll(page){
     });
 }
 
-async function GRScroll() { //scroll function for GR scroll menu 
-  await new Promise(resolve => {
-    const distance = 100; // should be less than or equal to window.innerHeight
-    const delay = 100;
-    const timer = setInterval(() => {
-      document.querySelector('.section-layout.section-scrollbox.scrollable-y').scrollBy(0, distance);
-      if (document.querySelector('.section-layout.section-scrollbox.scrollable-y').scrollTop + window.innerHeight >= document.querySelector('.section-layout.section-scrollbox.scrollable-y').scrollHeight) {
-        clearInterval(timer);
-        resolve();
-      }
-    }, delay);
+async function GRScroll(page) { //scroll function for GR scroll menu 
+  await page.evaluate(async () => {
+    await new Promise(resolve => {
+      var totalHeight = 0;
+      var distance = 100; // should be less than or equal to window.innerHeight
+      var timer = setInterval(() => {
+        var scrollHeight = document.querySelector('.section-layout.section-scrollbox.scrollable-y').scrollHeight;
+        document.querySelector('.section-layout.section-scrollbox.scrollable-y').scrollBy(0, distance);
+
+        totalHeight += distance;
+
+        if(totalHeight >= scrollHeight){
+          clearInterval(timer);
+          resolve();
+        }
+      }, 200);
+    });
   });
 }

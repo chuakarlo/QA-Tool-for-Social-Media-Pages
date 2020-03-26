@@ -105,7 +105,7 @@ async function updateJobs() {
                   if (a === b) hasDuplicate = true
                 })
 
-                if (hasDuplicate || (res.data.reviews.length < 20 && !$rootScope.run_twice_already && $rootScope.run_all_flag)) {
+                if (hasDuplicate || (res.data.reviews.length <= 21 && !$rootScope.run_twice_already && $rootScope.run_all_flag)) {
                     $rootScope.run_twice_already = true;
                     if ($rootScope.numSeq == 1) {
                         if ($rootScope.menu_next > 0) {
