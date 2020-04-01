@@ -3,14 +3,20 @@
 </div>
 <form ng-submit="submit()">
 <div class="modal-body">
-	<div class="text-sm" ng-repeat="v in data">
-		<label for="chk_{{v.name}}">
+	<div class="text-sm">
+		<label for="chk_{{v.name}}" ng-repeat="v in platform" class="pr-3">
 			<input id="chk_{{v.name}}" type="checkbox" ng-model="v.selected" /> {{v.name}}
+		</label>
+	</div>
+	<hr>
+	<div class="text-sm" ng-repeat="(i,v) in data">
+		<label for="chk_{{v.name}}">
+			<input id="chk_{{v.name}}" type="checkbox" ng-model="v.selected" ng-change="check(i,v)" />{{v.name}}
 		</label>
 	</div>
 </div>
 <div class="modal-footer">
-	<button type="submit" class="btn btn-primary">Run Selected</button>
+	<button type="submit" class="btn btn-primary" ng-disabled="run_disabled">Run Selected</button>
     <button class="btn btn-warning" ng-click="cancel($event)">Cancel</button>
 </div>
 </form>

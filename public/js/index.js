@@ -129,7 +129,7 @@ async function updateJobs() {
                 delete stop[id];
                 delete jobs[id];
 
-                menu_to_run();
+                $rootScope.menu_to_run_func();
             }
 
             checkIfStop();
@@ -137,22 +137,33 @@ async function updateJobs() {
     }
 }
 
-function menu_to_run() {
+$rootScope.menu_to_run_func = function() {
     if ($rootScope.menu_next < $rootScope.menu_to_run.length && $rootScope.run_all_flag) {
         var menu = $rootScope.menu_to_run[$rootScope.menu_next];
+        var flag = false;
 
-        if ($rootScope.numSeq == 1) {
-            $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 4000)
-        } else if ($rootScope.numSeq == 2) {
-            $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
-        } else if ($rootScope.numSeq == 3) {
-            $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 4000)
+        while(!flag) {
+            if ($rootScope.numSeq == 1 && $rootScope.platform[2].selected) {
+                $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 4000)
 
-            $rootScope.menu_next++;
-            $rootScope.numSeq = 0;
+                flag = true;
+            } else if ($rootScope.numSeq == 2 && $rootScope.platform[1].selected) {
+                $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
+                flag = true;
+            } else if ($rootScope.numSeq == 3 && $rootScope.platform[0].selected) {
+                $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 4000)
+                
+                flag = true;
+
+                $rootScope.menu_next++;
+                $rootScope.numSeq = 0;
+            } else {
+                $rootScope.numJobs--;
+                $rootScope.numStop--;
+            }
+
+            $rootScope.numSeq++;
         }
-
-        $rootScope.numSeq++;
     }
 }
 
@@ -204,11 +215,13 @@ $scope.run_all = function() {
 
     $rootScope.refreshFiles();
 
-    $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 2000)
-    $rootScope.numSeq = 2;
+    // $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 2000)
+    $rootScope.numSeq = 1;
 
     $rootScope.numJobs = $rootScope.menu_to_run.length * 3;
     $rootScope.numStop = $rootScope.menu_to_run.length * 3;
+
+    $rootScope.menu_to_run_func();
 }
 
 $rootScope.refreshFiles = function() {
@@ -248,7 +261,7 @@ $rootScope.get_tp = function(v) {
             $rootScope.numStop--;
             listOfSitesWithNoLink.push(v.name + " (Trustpilot)");
 
-            menu_to_run();
+            $rootScope.menu_to_run_func();
             checkIfStop();
         }
     }
@@ -281,7 +294,7 @@ $rootScope.get_fb = function(v) {
             $rootScope.numStop--;
             listOfSitesWithNoLink.push(v.name + " (Facebook)");
 
-            menu_to_run();
+            $rootScope.menu_to_run_func();
             checkIfStop();
         }
     }
@@ -314,7 +327,7 @@ $rootScope.get_gr = function(v) {
             $rootScope.numStop--;
             listOfSitesWithNoLink.push(v.name + " (Google Reviews)");
 
-            menu_to_run();
+            $rootScope.menu_to_run_func();
             checkIfStop();
         }
     }
@@ -395,13 +408,47 @@ app.controller('RunModalCtrl', function($scope, $uibModal) {
 
 app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $scope, $window, $uibModalInstance) {
     $scope.data = [];
+    $rootScope.platform = [
+        { name: "Trustpilot", selected: true },
+        { name: "Facebook", selected: true },
+        { name: "GoogleReviews", selected: true }
+    ];
+
+    $scope.run_disabled = true;
+
+    $scope.data.push({name: "All", selected: false});
 
     $rootScope.menus.forEach(function(v) {
         v.selected = false;
         $scope.data.push(v);
     });
 
+    $scope.check = function(index, value) {
+        if (index == 0) {
+            $scope.data.forEach(function(v) {
+                v.selected = value.selected ? true : false;
+            });
+            $scope.run_disabled = !value.selected;
+        } else {
+            var selected_flag = true;
+            var run_flag = true;
+            $scope.data.forEach(function(v,i) {
+                if (!v.selected && i != 0) {
+                    selected_flag = false;
+                }
+                if (v.selected) {
+                    run_flag = false;
+                }
+            });
+
+            $scope.data[0].selected = selected_flag;
+            $scope.run_disabled = run_flag;
+        }
+    }
+
     $scope.submit = function() {
+        // console.log($scope.data);
+        // console.log($rootScope.platform);
         $scope.run_selected();
 
         $uibModalInstance.close("Ok");
@@ -414,21 +461,31 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
 
         $rootScope.refreshFiles();
 
-        $scope.data.forEach(function(v) {
-            if (v.selected) {
+        $scope.data.forEach(function(v,i) {
+            if (v.selected && i != 0) {
                 $rootScope.menu_to_run.push(v);
             }
         });
 
-        $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 2000)
-        $rootScope.numSeq = 2;
+        $rootScope.numSeq = 1;
+
+        // $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 2000)
         
         $rootScope.numJobs = $rootScope.menu_to_run.length * 3;
         $rootScope.numStop = $rootScope.menu_to_run.length * 3;
+
+        $rootScope.menu_to_run_func();
     }
 
     $scope.cancel = function($event){
         $event.preventDefault();
+
+        $rootScope.platform = [
+            { name: "Trustpilot", selected: true },
+            { name: "Facebook", selected: true },
+            { name: "GoogleReviews", selected: true }
+        ];
+        
         $uibModalInstance.dismiss();
     }
 });
