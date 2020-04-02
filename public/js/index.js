@@ -123,6 +123,8 @@ async function updateJobs() {
                     } else {
                         $rootScope.numSeq--;
                     }
+
+                    // $rootScope.numStop++;
                 } else {
                     $rootScope.run_twice_already = false;
                     if (res.data.status == 404) {
@@ -145,10 +147,10 @@ async function updateJobs() {
 
 $rootScope.menu_to_run_func = function() {
     if ($rootScope.menu_next < $rootScope.menu_to_run.length && $rootScope.run_all_flag) {
-        var menu = $rootScope.menu_to_run[$rootScope.menu_next];
         var flag = false;
 
         while(!flag) {
+            var menu = $rootScope.menu_to_run[$rootScope.menu_next];
             if ($rootScope.numSeq == 1 && $rootScope.platform[2].selected) {
                 $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 4000)
 
@@ -261,7 +263,7 @@ $rootScope.get_tp = function(v) {
                     $rootScope.numStop++;
                 }
 
-                stop[res.data.id] = $interval(updateJobs, 24000);
+                stop[res.data.id] = $interval(updateJobs, 10000);
             })
         } else {
             $rootScope.numStop--;
@@ -294,7 +296,7 @@ $rootScope.get_fb = function(v) {
                     $rootScope.numStop++;
                 }
 
-                stop[res.data.id] = $interval(updateJobs, 24000);
+                stop[res.data.id] = $interval(updateJobs, 10000);
             })
         } else {
             $rootScope.numStop--;
@@ -327,7 +329,7 @@ $rootScope.get_gr = function(v) {
                     $rootScope.numStop++;
                 }
 
-                stop[res.data.id] = $interval(updateJobs, 24000);
+                stop[res.data.id] = $interval(updateJobs, 10000);
             })
         } else {
             $rootScope.numStop--;
@@ -485,8 +487,6 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
         $rootScope.platform.forEach(function(v) {
             if (v.selected) count++;
         });
-
-        console.log(count);
 
         // $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 2000)
         
