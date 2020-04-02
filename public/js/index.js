@@ -112,8 +112,6 @@ async function updateJobs() {
                 })
 
                 if (hasDuplicate || (res.data.reviews.length <= 21 && !$rootScope.run_twice_already && $rootScope.run_all_flag)) {
-                    console.log("hasDuplicate", hasDuplicate);
-                    console.log("res.data.reviews.length", res.data.reviews.length);
                     $rootScope.run_twice_already = true;
                     if ($rootScope.numSeq == 1) {
                         if ($rootScope.menu_next > 0) {
@@ -126,7 +124,6 @@ async function updateJobs() {
                         $rootScope.numSeq--;
                     }
                 } else {
-                    console.log("hasDuplicate no");
                     $rootScope.run_twice_already = false;
                     if (res.data.status == 404) {
                         sites_not_run.push(jobs[id].site + " (" + jobs[id].social + ")");
@@ -153,12 +150,10 @@ $rootScope.menu_to_run_func = function() {
 
         while(!flag) {
             if ($rootScope.numSeq == 1 && $rootScope.platform[2].selected) {
-                console.log("GR");
                 $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 4000)
 
                 flag = true;
             } else if ($rootScope.numSeq == 2 && $rootScope.platform[1].selected) {
-                console.log("FB");
                 $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
                 
                 flag = true;
@@ -167,19 +162,10 @@ $rootScope.menu_to_run_func = function() {
                     $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 4000)
                     
                     flag = true;
-                } else {
-                    console.log("ELSE");
-                    $rootScope.numJobs--;
-                    $rootScope.numStop--;
                 }
-                console.log("TP");
 
                 $rootScope.menu_next++;
                 $rootScope.numSeq = 0;
-            } else {
-                console.log("ELSE");
-                $rootScope.numJobs--;
-                $rootScope.numStop--;
             }
 
             $rootScope.numSeq++;
@@ -442,7 +428,6 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
     var run_flag = true;
 
     $scope.checkPlatform = function() {
-        console.log(run_flag);
         platformFlag = true;
         $rootScope.platform.forEach(function(v) {
             if (v.selected) platformFlag = false;
@@ -457,6 +442,7 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
                 v.selected = value.selected ? true : false;
             });
             $scope.run_disabled = !value.selected || platformFlag;
+            run_flag = !value.selected;
         } else {
             var selected_flag = true;
             $scope.data.forEach(function(v,i) {
