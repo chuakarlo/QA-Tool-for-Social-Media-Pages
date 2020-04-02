@@ -18,6 +18,12 @@ $rootScope.filename = "";
 $rootScope.getArray;
 $scope.separator = "|";
 
+$rootScope.platform = [
+    { name: "Trustpilot", selected: true },
+    { name: "Facebook", selected: true },
+    { name: "GoogleReviews", selected: true }
+];
+
 $scope.getHeader = function () {return ["Site", "Social", "Date", "Acc name", "Review", "Reply", "review link"]};
 
 if (dataSource) {
@@ -106,6 +112,8 @@ async function updateJobs() {
                 })
 
                 if (hasDuplicate || (res.data.reviews.length <= 21 && !$rootScope.run_twice_already && $rootScope.run_all_flag)) {
+                    console.log("hasDuplicate", hasDuplicate);
+                    console.log("res.data.reviews.length", res.data.reviews.length);
                     $rootScope.run_twice_already = true;
                     if ($rootScope.numSeq == 1) {
                         if ($rootScope.menu_next > 0) {
@@ -118,6 +126,7 @@ async function updateJobs() {
                         $rootScope.numSeq--;
                     }
                 } else {
+                    console.log("hasDuplicate no");
                     $rootScope.run_twice_already = false;
                     if (res.data.status == 404) {
                         sites_not_run.push(jobs[id].site + " (" + jobs[id].social + ")");
@@ -144,20 +153,31 @@ $rootScope.menu_to_run_func = function() {
 
         while(!flag) {
             if ($rootScope.numSeq == 1 && $rootScope.platform[2].selected) {
+                console.log("GR");
                 $timeout(function() {$rootScope.get_gr(menu);console.log(menu.name + "_gr");}, 4000)
 
                 flag = true;
             } else if ($rootScope.numSeq == 2 && $rootScope.platform[1].selected) {
+                console.log("FB");
                 $timeout(function() {$rootScope.get_fb(menu);console.log(menu.name + "_fb");}, 4000)
-                flag = true;
-            } else if ($rootScope.numSeq == 3 && $rootScope.platform[0].selected) {
-                $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 4000)
                 
                 flag = true;
+            } else if ($rootScope.numSeq == 3) {
+                if ($rootScope.platform[0].selected) {
+                    $timeout(function() {$rootScope.get_tp(menu);console.log(menu.name + "_tp");}, 4000)
+                    
+                    flag = true;
+                } else {
+                    console.log("ELSE");
+                    $rootScope.numJobs--;
+                    $rootScope.numStop--;
+                }
+                console.log("TP");
 
                 $rootScope.menu_next++;
                 $rootScope.numSeq = 0;
             } else {
+                console.log("ELSE");
                 $rootScope.numJobs--;
                 $rootScope.numStop--;
             }
@@ -408,11 +428,6 @@ app.controller('RunModalCtrl', function($scope, $uibModal) {
 
 app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $scope, $window, $uibModalInstance) {
     $scope.data = [];
-    $rootScope.platform = [
-        { name: "Trustpilot", selected: true },
-        { name: "Facebook", selected: true },
-        { name: "GoogleReviews", selected: true }
-    ];
 
     $scope.run_disabled = true;
 
@@ -423,15 +438,27 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
         $scope.data.push(v);
     });
 
-    $scope.check = function(index, value) {
+    var platformFlag = false;
+    var run_flag = true;
+
+    $scope.checkPlatform = function() {
+        console.log(run_flag);
+        platformFlag = true;
+        $rootScope.platform.forEach(function(v) {
+            if (v.selected) platformFlag = false;
+        });
+        $scope.run_disabled = platformFlag || run_flag;
+    }
+
+    $scope.checkSites = function(index, value) {
+        run_flag = true;
         if (index == 0) {
             $scope.data.forEach(function(v) {
                 v.selected = value.selected ? true : false;
             });
-            $scope.run_disabled = !value.selected;
+            $scope.run_disabled = !value.selected || platformFlag;
         } else {
             var selected_flag = true;
-            var run_flag = true;
             $scope.data.forEach(function(v,i) {
                 if (!v.selected && i != 0) {
                     selected_flag = false;
@@ -442,13 +469,11 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
             });
 
             $scope.data[0].selected = selected_flag;
-            $scope.run_disabled = run_flag;
+            $scope.run_disabled = platformFlag || run_flag;
         }
     }
 
     $scope.submit = function() {
-        // console.log($scope.data);
-        // console.log($rootScope.platform);
         $scope.run_selected();
 
         $uibModalInstance.close("Ok");
@@ -469,10 +494,18 @@ app.controller('RunModalContentCtrl', function($timeout, $rootScope, request, $s
 
         $rootScope.numSeq = 1;
 
+        var count = 0;
+
+        $rootScope.platform.forEach(function(v) {
+            if (v.selected) count++;
+        });
+
+        console.log(count);
+
         // $timeout(function() {$rootScope.get_gr($rootScope.menu_to_run[0]);console.log($rootScope.menu_to_run[0].name + "_gr");}, 2000)
         
-        $rootScope.numJobs = $rootScope.menu_to_run.length * 3;
-        $rootScope.numStop = $rootScope.menu_to_run.length * 3;
+        $rootScope.numJobs = $rootScope.menu_to_run.length * count;
+        $rootScope.numStop = $rootScope.menu_to_run.length * count;
 
         $rootScope.menu_to_run_func();
     }

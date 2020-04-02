@@ -5,13 +5,13 @@
 <div class="modal-body">
 	<div class="text-sm">
 		<label for="chk_{{v.name}}" ng-repeat="v in platform" class="pr-3">
-			<input id="chk_{{v.name}}" type="checkbox" ng-model="v.selected" /> {{v.name}}
+			<input id="chk_{{v.name}}" type="checkbox" ng-model="v.selected" ng-change="checkPlatform()" /> {{v.name}}
 		</label>
 	</div>
 	<hr>
 	<div class="text-sm" ng-repeat="(i,v) in data">
 		<label for="chk_{{v.name}}">
-			<input id="chk_{{v.name}}" type="checkbox" ng-model="v.selected" ng-change="check(i,v)" />{{v.name}}
+			<input id="chk_{{v.name}}" type="checkbox" ng-model="v.selected" ng-change="checkSites(i,v)" />{{v.name}}
 		</label>
 	</div>
 </div>
