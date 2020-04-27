@@ -1,11 +1,5 @@
 [
   {
-    "name": "EasyLifeHelper.Com",
-    "tp": "https://www.trustpilot.com/review/easylifehelper.com",
-    "fb": "https://www.facebook.com/pg/Easy-Life-Helper-113016700077154/reviews/?ref=page_internal",
-    "gr": "https://www.google.com/maps/place/EasyLifeHelper.com/@34.178412,-118.9272813,17z/data=!3m1!4b1!4m5!3m4!1s0x80e83b1dbc6ddc05:0xaa80959e17cc6a78!8m2!3d34.1784076!4d-118.9250926"
-  },
-  {
     "name": "MySuccess.Team",
     "tp": "https://www.trustpilot.com/review/mysuccess.team",
     "fb": "https://www.facebook.com/pg/My-Success-Team-101654927853244/reviews/?ref=page_internal",
@@ -159,6 +153,18 @@
     "name": "YourWebsiteMonitor.Com",
     "tp": "https://www.trustpilot.com/review/yourwebsitemonitor.com",
     "fb": "https://www.facebook.com/pg/Your-Website-Monitor-105879104318685/reviews/?ref=page_internal",
+    "gr": ""
+  },
+  {
+    "name": "FinancialSuccess.Team",
+    "tp": "",
+    "fb": "https://www.facebook.com/Financial-Success-Team-100796631580259/reviews/?ref=page_internal",
+    "gr": ""
+  },
+  {
+    "name": "DigitalMarket.Media",
+    "tp": "",
+    "fb": "https://www.facebook.com/Digital-Market-Media-113980023577764/reviews/?ref=page_internal",
     "gr": ""
   }
 ]

@@ -543,7 +543,12 @@ app.controller('ModalContentCtrl', function(request, $rootScope, $scope, $window
             gr_url: $rootScope.selectedMenu.gr
         }
     } else {
-        $scope.data = {};
+        $scope.data = {
+            name: '',
+            tp_url: '',
+            fb_url: '',
+            gr_url: '',
+        };
     }
 
     $scope.submit = function() {

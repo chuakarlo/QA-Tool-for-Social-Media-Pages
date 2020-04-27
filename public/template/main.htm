@@ -12,17 +12,16 @@
   </div>
   <hr>
   <div>
+      <button type="button" class="btn btn-info text-sm" ng-click="show_tp(selectedMenu.name)" ng-disabled="fetch_fb || fetch_gr || fetch_tp || selectedMenu.tp === ''">Trustpilot <i class='fa fa-cog fa-spin' ng-show="fetch_tp"></i></button>
 
-      <button type="button" class="btn btn-info text-sm" ng-click="show_tp(selectedMenu.name)" ng-disabled="fetch_fb || fetch_gr || fetch_tp || selectedMenu.tp === 'undefined'">Trustpilot <i class='fa fa-cog fa-spin' ng-show="fetch_tp"></i></button>
+      <button type="button" class="btn btn-info text-sm" ng-click="show_fb(selectedMenu.name)" ng-disabled="fetch_tp || fetch_gr || fetch_fb || selectedMenu.fb === ''">Facebook <i class='fa fa-cog fa-spin' ng-show="fetch_fb"></i></button>
 
-      <button type="button" class="btn btn-info text-sm" ng-click="show_fb(selectedMenu.name)" ng-disabled="fetch_tp || fetch_gr || fetch_fb || selectedMenu.fb === 'undefined'">Facebook <i class='fa fa-cog fa-spin' ng-show="fetch_fb"></i></button>
-
-      <button type="button" class="btn btn-info text-sm" ng-click="show_gr(selectedMenu.name)" ng-disabled="fetch_fb || fetch_tp || fetch_gr || selectedMenu.gr === 'undefined'">Google Reviews <i class='fa fa-cog fa-spin' ng-show="fetch_gr"></i></button>
+      <button type="button" class="btn btn-info text-sm" ng-click="show_gr(selectedMenu.name)" ng-disabled="fetch_fb || fetch_tp || fetch_gr || selectedMenu.gr === ''">Google Reviews <i class='fa fa-cog fa-spin' ng-show="fetch_gr"></i></button>
 
       <div class="d-inline-block pull-right">
-        <a class="individual_button" ng-click="get_tp(selectedMenu)" ng-disabled="fetch_fb || fetch_gr || fetch_tp || selectedMenu.tp === 'undefined'">Run Trustpilot</a> | 
-        <a class="individual_button" ng-click="get_fb(selectedMenu)" ng-disabled="fetch_tp || fetch_gr || fetch_fb || selectedMenu.fb === 'undefined'">Run Facebook</a> | 
-        <a class="individual_button" ng-click="get_gr(selectedMenu)" ng-disabled="fetch_fb || fetch_tp || fetch_gr || selectedMenu.gr === 'undefined'">Run Google Reviews</a>
+        <a class="individual_button" ng-click="get_tp(selectedMenu)" ng-disabled="fetch_fb || fetch_gr || fetch_tp || selectedMenu.tp === ''">Run Trustpilot</a> | 
+        <a class="individual_button" ng-click="get_fb(selectedMenu)" ng-disabled="fetch_tp || fetch_gr || fetch_fb || selectedMenu.fb === ''">Run Facebook</a> | 
+        <a class="individual_button" ng-click="get_gr(selectedMenu)" ng-disabled="fetch_fb || fetch_tp || fetch_gr || selectedMenu.gr === ''">Run Google Reviews</a>
       </div>
   </div>
   <div class="row pad_" ng-if="show_reviews">
