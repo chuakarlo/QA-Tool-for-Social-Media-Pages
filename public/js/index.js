@@ -554,15 +554,27 @@ app.controller('ModalContentCtrl', function(request, $rootScope, $scope, $window
     $scope.submit = function() {
         if ($rootScope.type == 'edit') {
             $scope.edit_site_details($rootScope.selectedMenu.name, $scope.data.name, $scope.data.tp_url, $scope.data.fb_url, $scope.data.gr_url);
+
+            $uibModalInstance.close("Ok");
+
+            $window.location.reload();
         } else if ($rootScope.type == 'delete') {
             $scope.delete_site_details($rootScope.selectedMenu.name);
+            
+            $uibModalInstance.close("Ok");
+
+            $window.location.reload();
         } else {
-            $scope.add_site_details($scope.data.name, $scope.data.tp_url, $scope.data.fb_url, $scope.data.gr_url);
+            if ($scope.data.tp_url.trim() != "" || $scope.data.fb_url.trim() != "" || $scope.data.gr_url.trim() != "") {
+                $scope.add_site_details($scope.data.name, $scope.data.tp_url, $scope.data.fb_url, $scope.data.gr_url);
+                
+                $uibModalInstance.close("Ok");
+
+                $window.location.reload();
+            } else {
+                alert("At least one URL must be provided!");
+            }
         }
-
-        $uibModalInstance.close("Ok");
-
-        $window.location.reload();
     }
 
     $scope.delete_site_details = function(name) {
