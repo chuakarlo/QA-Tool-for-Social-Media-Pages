@@ -45,6 +45,7 @@ throng({ workers, start });
 
 const puppeteer = require('puppeteer');
 const tr = require('timeago-reverse');
+var isHeadless = false;
 
 async function main_tp(url) {
   console.log("Fetching: " + url)
@@ -52,7 +53,7 @@ async function main_tp(url) {
   var browser;
   try {
       browser = await puppeteer.launch({
-        headless : true,
+        headless : isHeadless,
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox'
@@ -62,9 +63,14 @@ async function main_tp(url) {
       page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3312.0 Safari/537.36');
       await page.goto(url,{ waitUntil: 'networkidle0',timeout: 3000000 });
 
+      var count = 0;
+
       while (true) {
+        count++;
+        await page.waitFor(1000);
         await page.waitForSelector('.review-list');
         const sections = await page.$$('.review-card');
+        console.log("Page " + count + " : " + sections.length + " reviews");
         for(i = 0; i < sections.length; i++){
           //get date
           const d = await page.$$('.review-content-header__dates script');
@@ -148,7 +154,7 @@ async function main_gr(url) {
   var browser;
   try {
     browser = await puppeteer.launch({
-        headless : true,
+        headless : isHeadless,
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox'
@@ -255,7 +261,7 @@ async function main_fb(url) {
   var browser;
   try {
     browser = await puppeteer.launch({
-        headless : true,
+        headless : isHeadless,
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox'
