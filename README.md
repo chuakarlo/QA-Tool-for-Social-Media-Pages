@@ -1,1 +1,1 @@
-This is a tool to scrape reviews on Facebook, Trustpilotl, and Google Maps.
+This is a tool to scrape reviews on Facebook, Trustpilot, and Google Maps.
